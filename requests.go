@@ -53,18 +53,19 @@ func (t *TikTok) sendRequest(o *reqOptions) (body []byte, err error) {
 	}
 
 	vs := url.Values{}
-	bf := bytes.NewBuffer([]byte{})
-	reqData := bytes.NewBuffer([]byte{})
-
 	for k, v := range o.Query {
 		vs.Add(k, v)
 	}
 
-	// Encode map to post form data
-	reqData.WriteString(vs.Encode())
+	reqData := bytes.NewBuffer([]byte{})
+	if o.IsPost {
+		reqData.WriteString(vs.Encode())
+	} else {
+		u.RawQuery = vs.Encode()
+	}
 
 	var req *http.Request
-	req, err = http.NewRequest(method, u.String(), bf)
+	req, err = http.NewRequest(method, u.String(), reqData)
 	if err != nil {
 		return
 	}
@@ -87,7 +88,8 @@ func (t *TikTok) sendRequest(o *reqOptions) (body []byte, err error) {
 	}
 
 	headers := map[string]string{
-		"Connection":      "keep-alive",
+		// "Connection":      "keep-alive",
+		"Connection":      "close",
 		"Cache-Control":   "max-age=0",
 		"User-Agent":      userAgent,
 		"Accept":          "text/html,application/json,application/protobuf",

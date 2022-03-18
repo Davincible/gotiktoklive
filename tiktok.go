@@ -1,9 +1,9 @@
 package gotiktoklive
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -30,27 +30,69 @@ func GetRoomInfo(user string) error {
 	return nil
 }
 
-func (t *TikTok) getRoomID(user string) (int64, error) {
+func (t *TikTok) getRoomID(user string) (string, error) {
 	body, err := t.sendRequest(&reqOptions{
 		Endpoint: fmt.Sprintf(urlUserLive, user),
 		OmitAPI:  true,
 	})
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
 	if id := reRoomIDMeta.FindSubmatch(body); len(id) > 1 {
-		return strconv.ParseInt(string(id[1]), 10, 64)
+		return string(id[1]), nil
 	}
 
 	if id := reRoomIDJson.FindSubmatch(body); len(id) > 1 {
-		return strconv.ParseInt(string(id[1]), 10, 64)
+		return string(id[1]), nil
 	}
 
 	if strings.Contains(string(body), `"og:url"`) {
-		return 0, ErrUserOffline
+		return "", ErrUserOffline
 	}
-	return 0, ErrIPBlocked
+	return "", ErrIPBlocked
+}
+
+func (t *TikTok) getRoomInfo(id string) (*RoomInfo, error) {
+	params := defaultGETParams
+	params["room_id"] = id
+
+	body, err := t.sendRequest(&reqOptions{
+		Endpoint: urlRoomInfo,
+		Query:    params,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var rsp roomInfoRsp
+	if err := json.Unmarshal(body, &rsp); err != nil {
+		return nil, err
+	}
+
+	if rsp.RoomInfo.Status == 4 {
+		return rsp.RoomInfo, ErrLiveHasEnded
+	}
+	return rsp.RoomInfo, nil
+}
+
+func (t *TikTok) getGiftInfo(id string) (*GiftInfo, error) {
+	params := defaultGETParams
+	params["room_id"] = id
+
+	body, err := t.sendRequest(&reqOptions{
+		Endpoint: urlGiftInfo,
+		Query:    params,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var rsp GiftInfoRsp
+	if err := json.Unmarshal(body, &rsp); err != nil {
+		return nil, err
+	}
+	return rsp.GiftInfo, nil
 }
 
 func defaultHandler(i ...interface{}) {
