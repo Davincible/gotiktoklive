@@ -55,7 +55,8 @@ var (
 )
 
 var (
-	ErrUserOffline  = errors.New("User might be offline, Room ID not found")
-	ErrIPBlocked    = errors.New("Your IP or country might be blocked by TikTok.")
-	ErrLiveHasEnded = errors.New("Livestream has ended")
+	ErrUserOffline       = errors.New("User might be offline, Room ID not found")
+	ErrIPBlocked         = errors.New("Your IP or country might be blocked by TikTok.")
+	ErrLiveHasEnded      = errors.New("Livestream has ended")
+	ErrMsgNotImplemented = errors.New("Message protobuf type has not been implemented, please report")
 )
