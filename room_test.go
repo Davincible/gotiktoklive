@@ -1,7 +1,6 @@
 package gotiktoklive
 
 import (
-	"encoding/base64"
 	"testing"
 )
 
@@ -27,7 +26,12 @@ func TestRoomInfo(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	info, err := tiktok.getRoomInfo(id)
+	live := Live{
+		tiktok: tiktok,
+		ID:     id,
+	}
+
+	info, err := live.getRoomInfo()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -42,7 +46,12 @@ func TestGiftInfo(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	info, err := tiktok.getGiftInfo(id)
+	live := Live{
+		tiktok: tiktok,
+		ID:     id,
+	}
+
+	info, err := live.getGiftInfo()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -57,17 +66,15 @@ func TestRoomData(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	info, err := tiktok.getRoomData(id)
+	live := Live{
+		tiktok: tiktok,
+		ID:     id,
+	}
+
+	info, err := live.getRoomData()
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	t.Logf("Ws url: %s, %+v", info.WsUrl, info.WsParam)
-
-	for _, msg := range info.Messages {
-		if msg.Type == "WebcastLiveIntroMessage" {
-			m := base64.StdEncoding.EncodeToString(msg.Binary)
-			t.Logf("Message Type: %s : %v", msg.Type, m)
-		}
-	}
 }
