@@ -3,6 +3,7 @@ package gotiktoklive
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 	"strings"
 
 	pb "gotiktoklive/proto"
@@ -14,10 +15,12 @@ type Live struct {
 	tiktok *TikTok
 
 	cursor string
+	wss    net.Conn
 
 	ID       string
 	Info     *RoomInfo
 	GiftInfo *GiftInfo
+	Events   chan interface{}
 }
 
 func (t *TikTok) TrackLive(username string) (*Live, error) {

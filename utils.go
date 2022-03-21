@@ -1,6 +1,7 @@
 package gotiktoklive
 
 import (
+	"encoding/base64"
 	"fmt"
 	pb "gotiktoklive/proto"
 
@@ -8,7 +9,7 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-func parseMsg(msg *pb.Message) (protoreflect.ProtoMessage, error) {
+func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (protoreflect.ProtoMessage, error) {
 	var out protoreflect.ProtoMessage
 	switch msg.Type {
 	case "WebcastChatMessage":
@@ -33,8 +34,14 @@ func parseMsg(msg *pb.Message) (protoreflect.ProtoMessage, error) {
 		out = &pb.WebcastLinkMicBattle{}
 	case "WebcastLinkMicArmies":
 		out = &pb.WebcastLinkMicArmies{}
+	case "WebcastLiveIntroMessage":
+		out = &pb.WebcastLiveIntroMessage{}
+	case "WebcastInRoomBannerMessage":
+		out = &pb.WebcastInRoomBannerMessage{}
 	default:
-		return nil, ErrMsgNotImplemented
+		data := base64.StdEncoding.EncodeToString(msg.Binary)
+		warnHandler(fmt.Errorf("%w: %s,\n%s", ErrMsgNotImplemented, msg.Type, data))
+		return nil, nil
 	}
 	if err := proto.Unmarshal(msg.Binary, out); err != nil {
 		return nil, err

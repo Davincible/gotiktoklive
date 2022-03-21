@@ -15,14 +15,6 @@ type TikTok struct {
 	debugHandler func(...interface{})
 }
 
-type Live struct {
-	tiktok *TikTok
-
-	ID       string
-	Info     *RoomInfo
-	GiftInfo *GiftInfo
-}
-
 func NewTikTok() *TikTok {
 	jar, _ := cookiejar.New(nil)
 
