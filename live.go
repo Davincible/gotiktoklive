@@ -56,7 +56,7 @@ func (t *TikTok) TrackLive(username string) (*Live, error) {
 	}
 	live.GiftInfo = giftInfo
 
-	err := live.getRoomData()
+	err = live.getRoomData()
 	if err != nil {
 		return nil, err
 	}
