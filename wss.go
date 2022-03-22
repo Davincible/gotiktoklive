@@ -10,7 +10,7 @@ import (
 	"net/url"
 	"time"
 
-	pb "gotiktoklive/proto"
+	pb "github.com/Davincible/gotiktoklive/proto"
 
 	"github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
@@ -81,26 +81,33 @@ func (l *Live) readSocket() {
 	for {
 		hdr, err := rd.NextFrame()
 		if err != nil {
-			handleReadError(err)
+			handleRoutineError(err)
 		}
 
 		// If msg is ping or close
 		if hdr.OpCode.IsControl() {
 			if err := controlHandler(hdr, &rd); err != nil {
-				handleReadError(err)
+				handleRoutineError(err)
 			}
 			continue
 		}
 
 		// Reopen connection if it was closed
 		if hdr.OpCode == ws.OpClose {
-			panic("Socket closed")
+			connected, err := l.tryConnectionUpgrade()
+			if err != nil {
+				handleRoutineError(err)
+			}
+			if !connected {
+				go l.startPolling(context.Background())
+				return
+			}
 		}
 
 		// Wrong OpCode
 		if hdr.OpCode&want == 0 {
 			if err := rd.Discard(); err != nil {
-				handleReadError(err)
+				handleRoutineError(err)
 			}
 			continue
 		}
@@ -108,11 +115,11 @@ func (l *Live) readSocket() {
 		// Read message
 		msgBytes, err := ioutil.ReadAll(&rd)
 		if err != nil {
-			handleReadError(err)
+			handleRoutineError(err)
 		}
 
 		if err := l.parseWssMsg(msgBytes); err != nil {
-			handleReadError(err)
+			handleRoutineError(err)
 		}
 
 		// Gracefully shutdown
@@ -120,10 +127,6 @@ func (l *Live) readSocket() {
 		// 	return
 		// }
 	}
-}
-
-func handleReadError(err error) {
-	panic(err)
 }
 
 func (l *Live) parseWssMsg(wssMsg []byte) error {
@@ -198,4 +201,18 @@ func (l *Live) sendAck(id uint64) error {
 		return err
 	}
 	return nil
+}
+
+func (l *Live) tryConnectionUpgrade() (bool, error) {
+	if l.wsURL != "" && l.wsParams != nil {
+		err := l.connect(l.wsURL, l.wsParams)
+		if err != nil {
+			return false, err
+		}
+		if l.tiktok.Debug {
+			l.tiktok.debugHandler("Connected to websocket")
+		}
+		return true, nil
+	}
+	return false, nil
 }

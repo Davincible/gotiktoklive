@@ -3,7 +3,8 @@ package gotiktoklive
 import (
 	"encoding/base64"
 	"fmt"
-	pb "gotiktoklive/proto"
+
+	pb "github.com/Davincible/gotiktoklive/proto"
 
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -51,4 +52,8 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (protoreflect.P
 
 func defaultHandler(i ...interface{}) {
 	fmt.Println(i...)
+}
+
+func handleRoutineError(err error) {
+	panic(err)
 }
