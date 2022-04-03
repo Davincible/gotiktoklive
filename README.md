@@ -1,6 +1,6 @@
 # GoTikTokLive
 
-A Go module to discover, receive and decode livestreams and the livestream events such as comments and gifts in realtime from [TikTok LIVE](https://www.tiktok.com/live) by connecting to TikTok's internal WebCast push service. The package includes a wrapper that connects to the WebCast service using just the username (`uniqueId`). This allows you to connect to your own live chat as well as the live chat of other streamers. No credentials are required. Besides [Chat Comments](#chat), other events such as [Members Joining](#member), [Gifts](#gift), [Viewers](#roomuser), [Follows](#social), [Shares](#social), [Questions](#questionnew), [Likes](#like) and [Battles](#linkmicbattle) can be tracked.
+A Go module to discover, receive and decode livestreams and the livestream events such as comments and gifts in realtime from [TikTok LIVE](https://www.tiktok.com/live) by connecting to TikTok's internal WebCast push service. The package includes a wrapper that connects to the WebCast service using just the username (`uniqueId`). This allows you to connect to your own live chat as well as the live chat of other streamers. No credentials are required. Besides [Chat Comments](#ChatEvent), other events such as [Members Joining](#UserEvent), [Gifts](#GiftEvent), [Viewers](#ViewersEvent), [Follows](#UserEvent), [Shares](#UserEvent), [Questions](#QuestionEvent), [Likes](#LikeEvent) and [Battles](#BattlesEvent) can be tracked.
 
 Looking for a Python implementation of this library? Check out [TikTok-Live-Connector](https://github.com/isaackogan/TikTok-Live-Connector) by [**@isaackogan**](https://github.com/isaackogan)
 
@@ -74,7 +74,7 @@ type TikTok struct {
 	LogRequests bool
 }
 
-// NewTikTok creates a tiktok instance that allows you to track live streams 
+// NewTikTok creates a tiktok instance that allows you to track live streams
 //  and discover current livestreams.
 func NewTikTok() *TikTok {}
 
@@ -287,7 +287,6 @@ type IntroEvent struct {
 
 ## Examples
 
-
 ### Fetching Recommended Live Streams
 
 With a feed instance you can fetch a list of recommended livestreams, and directly
@@ -340,4 +339,5 @@ tiktok.SetErrorHandler(func(err error) {
 ```
 
 ## Contributing
+
 Your improvements are welcome! Feel free to open an <a href="https://github.com/Davincible/gotiktoklive/issues">issue</a> or <a href="https://github.com/Davincible/gotiktoklive/pulls">pull request</a>.
