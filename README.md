@@ -32,7 +32,7 @@ go get github.com/Davincible/gotiktoklive
 // Create TikTok Instance
 tiktok := gotiktoklive.NewTikTok()
 
-// Track a TikTok user by uesrname
+// Track a TikTok user by username
 live, err := tiktok.TrackUser("promobot.robots")
 if err != nil {
     panic(err)
