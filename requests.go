@@ -131,7 +131,7 @@ func (t *TikTok) sendRequest(o *reqOptions) (body []byte, err error) {
 	}
 
 	// Log complete response body
-	if t.Debug {
+	if t.LogRequests {
 		r := map[string]interface{}{
 			"status":   resp.StatusCode,
 			"endpoint": o.Endpoint,

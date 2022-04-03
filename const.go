@@ -11,11 +11,14 @@ const (
 	tiktokAPIUrl  = "https://webcast.tiktok.com/webcast/"
 
 	// Endpoints
-	urlLive     = "live/"
-	urlUserLive = "@%s/live/"
-	urlRoomInfo = "room/info/"
-	urlRoomData = "im/fetch/"
-	urlGiftInfo = "gift/list/"
+	urlLive      = "live/"
+	urlFeed      = "feed/"
+	urlRankList  = "ranklist/online_audience/"
+	urlPriceList = "diamond/"
+	urlUserLive  = "@%s/live/"
+	urlRoomInfo  = "room/info/"
+	urlRoomData  = "im/fetch/"
+	urlGiftInfo  = "gift/list/"
 
 	// Default Request Headers
 	userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
@@ -59,4 +62,5 @@ var (
 	ErrIPBlocked         = errors.New("Your IP or country might be blocked by TikTok.")
 	ErrLiveHasEnded      = errors.New("Livestream has ended")
 	ErrMsgNotImplemented = errors.New("Message protobuf type has not been implemented, please report")
+	ErrNoMoreFeedItems   = errors.New("No more feed items available")
 )

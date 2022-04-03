@@ -80,7 +80,6 @@ message WebcastLinkMicArmiesGroup {
 } 
 
 
-
 // Follow & share event
 message WebcastSocialMessage {
     User user = 2;
@@ -168,8 +167,59 @@ message WebcastLiveIntroMessage {
     User user = 5;
 }
 
-// Example:
-// {"debug":false,"t_22_2_live_star_br":{"_extra":{"step":null,"now_millis":1647883025704,"now":"2022-03-21T17:17:05.704027216Z","extra_map":{"activity_time":{"start_time":1647572400,"end_time":1648436398,"show_time":1648523399},"age_interval":{"status":false},"anchor_track":{"track":0,"pre_track":0},"final_anchor_daily_task":{"role":1,"task_type":1,"task_item":[],"current_interval":-1},"final_user_daily_task":{"role":2,"task_type":1,"task_item":[],"current_interval":-1},"final_user_lottery":{"score":0},"phase_time":{"phase":1,"preliminary_phase":{"start_time":1647572400000,"end_time":1648177199000},"final_phase":{"start_time":1648177200000,"end_time":1648436399000},"show_phase":{"start_time":1648436400000,"end_time":1648522799000}},"preliminary_anchor_daily_task":{"role":1,"task_type":1,"task_item":[{"name":"","phase_type":1,"phase_index":0,"filter":false,"phase":[{"condition":[{"current":0,"target":1800,"phase":0,"typ":101,"finish_millis":0,"already_repeat_count":0},{"current":0,"target":2,"phase":0,"typ":105,"finish_millis":0,"already_repeat_count":0},{"current":0,"target":30,"phase":0,"typ":115,"finish_millis":0,"already_repeat_count":0}],"reward":[{"reward_type":1001,"reward_id":"low_flare_card_pre_task_daily_reward_id","reward_count":1},{"reward_type":21,"reward_id":"preliminary_anchor_daily_task_flare_notice","reward_count":1},{"reward_type":102,"reward_id":"preliminary_anchor_daily_task_finish_count","reward_count":1}],"finish_millis":0}],"interval":null}],"current_interval":4},"preliminary_user_daily_task":{"role":2,"task_type":1,"task_item":[{"name":"","phase_type":1,"phase_index":0,"filter":false,"phase":[{"condition":[{"current":0,"target":600,"phase":0,"typ":201,"finish_millis":0,"already_repeat_count":0},{"current":0,"target":1,"phase":0,"typ":219,"finish_millis":0,"already_repeat_count":0},{"current":0,"target":10,"phase":0,"typ":209,"finish_millis":0,"already_repeat_count":0}],"reward":[{"reward_type":1,"reward_id":"user_medal","reward_count":1},{"reward_type":21,"reward_id":"user_daily_task_notice","reward_count":1},{"reward_type":29,"reward_id":"special_gift_unlock_group_1","reward_count":1}],"finish_millis":0}],"interval":null}],"current_interval":4},"preliminary_user_lottery":{"score":0},"rank_banner":null,"user_basic":{"anchor_user_same_region":false,"has_anchor_opt_out":false,"is_anchor_qualified":false,"is_user_login":false}},"time_zone":-10800},"_just_anchor":true,"debug":false,"user":"6877484104913257473"},"user":"6877484104913257473"}
 message WebcastInRoomBannerMessage {
     string json = 2;
+}
+
+message MessageType {
+    string type = 1;
+}
+
+message RoomMessage {
+    MessageType type = 1;
+    string text = 2;
+}
+
+message WebcastWishlistUpdateMessage {
+    MessageType type = 1;
+    GiftUpdates gitfs = 2;
+}
+
+message GiftUpdates {
+    uint64 some_int = 1;
+    repeated WishListGift gifts = 2;
+    // causes errors as sometimes the username is a list of ids
+    // repeated GiftUser users = 3;
+    uint64 count = 4;
+    string msg = 5;
+}
+
+message GiftUser {
+   uint64 id = 1;
+   repeated string profile_picture = 3;
+   string username = 4;
+   uint64 unknown = 5;  // something that relates to the gifts I expect
+}
+
+message WishListGift {
+    uint64 type = 1;
+    uint64 id = 2;
+    uint64 received_count = 3;
+    uint64 goal_count = 4;
+    Gift gift = 5;
+}
+
+message Gift {
+    string name = 1;
+    GiftImg imgs = 2;
+    uint64 cost = 3;
+}
+
+message GiftImg {
+   repeated string urls = 1;
+   string color = 5;
+}
+
+message WebcastGiftBroadcastMessage {
+
 }

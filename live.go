@@ -9,17 +9,19 @@ import (
 
 	pb "github.com/Davincible/gotiktoklive/proto"
 
-	"context"
-
 	"google.golang.org/protobuf/proto"
 )
+
+// TODO: check gift prices of gifts not in wish list
 
 const (
 	POLLING_INTERVAL = time.Second
 )
 
+// Live allows you to track a livestream.
+// To track a user call tiktok.TrackUser(<user>).
 type Live struct {
-	tiktok *TikTok
+	t *TikTok
 
 	cursor   string
 	wss      net.Conn
@@ -32,14 +34,17 @@ type Live struct {
 	Events   chan interface{}
 }
 
-func (t *TikTok) TrackLive(username string) (*Live, error) {
+// TrackUser will start to track the livestream of a user, if live.
+// To listen to events emitted by the livestream, such as comments and viewer
+//  count, listen to the Live.Events channel.
+func (t *TikTok) TrackUser(username string) (*Live, error) {
 	id, err := t.getRoomID(username)
 	if err != nil {
 		return nil, err
 	}
 
 	live := Live{
-		tiktok: t,
+		t:      t,
 		ID:     id,
 		Events: make(chan interface{}, 100),
 	}
@@ -66,7 +71,8 @@ func (t *TikTok) TrackLive(username string) (*Live, error) {
 		return nil, err
 	}
 	if !wss {
-		live.startPolling(context.Background())
+		t.wg.Add(1)
+		live.startPolling()
 	}
 
 	return &live, nil
@@ -96,9 +102,9 @@ func (t *TikTok) getRoomID(user string) (string, error) {
 }
 
 func (l *Live) getRoomInfo() (*RoomInfo, error) {
-	t := l.tiktok
+	t := l.t
 
-	params := defaultGETParams
+	params := copyMap(defaultGETParams)
 	params["room_id"] = l.ID
 
 	body, err := t.sendRequest(&reqOptions{
@@ -121,9 +127,9 @@ func (l *Live) getRoomInfo() (*RoomInfo, error) {
 }
 
 func (l *Live) getGiftInfo() (*GiftInfo, error) {
-	t := l.tiktok
+	t := l.t
 
-	params := defaultGETParams
+	params := copyMap(defaultGETParams)
 	params["room_id"] = l.ID
 
 	body, err := t.sendRequest(&reqOptions{
@@ -134,7 +140,7 @@ func (l *Live) getGiftInfo() (*GiftInfo, error) {
 		return nil, err
 	}
 
-	var rsp GiftInfoRsp
+	var rsp giftInfoRsp
 	if err := json.Unmarshal(body, &rsp); err != nil {
 		return nil, err
 	}
@@ -142,9 +148,9 @@ func (l *Live) getGiftInfo() (*GiftInfo, error) {
 }
 
 func (l *Live) getRoomData() error {
-	t := l.tiktok
+	t := l.t
 
-	params := defaultGETParams
+	params := copyMap(defaultGETParams)
 	params["room_id"] = l.ID
 
 	if l.cursor != "" {
@@ -180,12 +186,13 @@ func (l *Live) getRoomData() error {
 	return nil
 }
 
-func (l *Live) startPolling(ctx context.Context) {
+func (l *Live) startPolling() {
 	ticker := time.NewTicker(POLLING_INTERVAL)
 	defer ticker.Stop()
+	defer l.t.wg.Done()
 
-	if l.tiktok.Debug {
-		l.tiktok.debugHandler("Started polling")
+	if l.t.Debug {
+		l.t.debugHandler("Started polling")
 	}
 
 	for {
@@ -203,8 +210,33 @@ func (l *Live) startPolling(ctx context.Context) {
 			if wss {
 				return
 			}
-		case <-ctx.Done():
+		case <-l.t.done():
 			return
 		}
 	}
 }
+
+// Only able to get this while logged in
+// func (l *Live) GetRankList() (*RankList, error) {
+// 	t := l.t
+//
+// 	params := copyMap(defaultGETParams)
+// 	params["room_id"] = l.ID
+// 	params["channel"] = "tiktok_web"
+// 	params["anchor_id"] = "idk"
+//
+// 	body, err := t.sendRequest(&reqOptions{
+// 		Endpoint: urlRankList,
+// 		Query:    params,
+// 	})
+// 	if err != nil {
+// 		return nil, err
+// 	}
+//
+// 	var rsp rankListRsp
+// 	if err := json.Unmarshal(body, &rsp); err != nil {
+// 		return nil, err
+// 	}
+//
+// 	return &rsp.RankList, nil
+// }

@@ -1,5 +1,118 @@
 package gotiktoklive
 
+// Events
+
+type RoomEvent struct {
+	Type    string
+	Message string
+}
+
+type ChatEvent struct {
+	Comment string
+	User    *User
+}
+
+type UserEvent struct {
+	DisplayType string
+	Label       string
+	User        *User
+}
+
+type ViewersEvent struct {
+	Viewers int
+}
+
+type GiftEvent struct {
+	Gift Gift
+	User *User
+}
+
+type Gift struct {
+	ID          int64  `json:"gift_id"`
+	RepeatCount int64  `json:"repeat_count"`
+	RepeatEnd   int64  `json:"repeat_end"`
+	MsgID       int64  `json:"msg_id"`
+	AnchorID    int64  `json:"anchor_id"`
+	RoomID      int64  `json:"room_id"`
+	Type        int64  `json:"gift_type"`
+	FromUserID  int64  `json:"from_user_id"`
+	FromIdc     string `json:"from_idc"`
+	ToUserID    int64  `json:"to_user_id"`
+	Timestamp   int64  `json:"send_gift_send_message_success_ms"`
+}
+
+type LikeEvent struct {
+	Likes       int
+	TotalLikes  int
+	User        *User
+	DisplayType string
+	Label       string
+}
+
+type QuestionEvent struct {
+	Quesion string
+	User    *User
+}
+
+type ControlEvent struct {
+	Action int
+}
+
+type MicBattleEvent struct {
+	Users []*User
+}
+
+type BattlesEvent struct {
+	Status  int
+	Battles []*Battle
+}
+
+type RoomBannerEvent struct {
+	Data interface{}
+}
+
+type IntroEvent struct {
+	ID    int
+	Title string
+	User  *User
+}
+
+type Battle struct {
+	Host   int64
+	Groups []*BattleGroup
+}
+
+type BattleGroup struct {
+	Points int
+	Users  []*User
+}
+
+type User struct {
+	ID              int64
+	Nickname        string
+	FullName        string
+	ProfilePicture  *ProfilePicture
+	ExtraAttributes *ExtraAttributes
+	Badge           *BadgeAttributes
+}
+
+type ProfilePicture struct {
+	Urls []string
+}
+
+type ExtraAttributes struct {
+	FollowRole int
+}
+
+type BadgeAttributes struct {
+	Badges []*UserBadge
+}
+
+type UserBadge struct {
+	Type string
+	Name string
+}
+
 type roomInfoRsp struct {
 	RoomInfo *RoomInfo `json:"data"`
 	Extra    struct {
@@ -9,8 +122,7 @@ type roomInfoRsp struct {
 }
 
 type RoomInfo struct {
-	AnchorABMap struct {
-	} `json:"AnchorABMap"`
+	AnchorABMap              interface{}   `json:"AnchorABMap"`
 	AdminUserIds             []interface{} `json:"admin_user_ids"`
 	AnchorScheduledTimeText  string        `json:"anchor_scheduled_time_text"`
 	AnchorShareText          string        `json:"anchor_share_text"`
@@ -135,142 +247,20 @@ type RoomInfo struct {
 		RoomIDStr   string  `json:"room_id_str"`
 		SilenceFlag float64 `json:"silence_flag"`
 	} `json:"living_room_attrs"`
-	LotteryFinishTime float64 `json:"lottery_finish_time"`
-	MosaicStatus      float64 `json:"mosaic_status"`
-	OsType            float64 `json:"os_type"`
-	Owner             struct {
-		AllowFindByContacts                 bool `json:"allow_find_by_contacts"`
-		AllowOthersDownloadVideo            bool `json:"allow_others_download_video"`
-		AllowOthersDownloadWhenSharingVideo bool `json:"allow_others_download_when_sharing_video"`
-		AllowShareShowProfile               bool `json:"allow_share_show_profile"`
-		AllowShowInGossip                   bool `json:"allow_show_in_gossip"`
-		AllowShowMyAction                   bool `json:"allow_show_my_action"`
-		AllowStrangeComment                 bool `json:"allow_strange_comment"`
-		AllowUnfollowerComment              bool `json:"allow_unfollower_comment"`
-		AllowUseLinkmic                     bool `json:"allow_use_linkmic"`
-		AvatarLarge                         struct {
-			AvgColor   string   `json:"avg_color"`
-			Height     float64  `json:"height"`
-			ImageType  float64  `json:"image_type"`
-			IsAnimated bool     `json:"is_animated"`
-			OpenWebURL string   `json:"open_web_url"`
-			URI        string   `json:"uri"`
-			URLList    []string `json:"url_list"`
-			Width      float64  `json:"width"`
-		} `json:"avatar_large"`
-		AvatarMedium struct {
-			AvgColor   string   `json:"avg_color"`
-			Height     float64  `json:"height"`
-			ImageType  float64  `json:"image_type"`
-			IsAnimated bool     `json:"is_animated"`
-			OpenWebURL string   `json:"open_web_url"`
-			URI        string   `json:"uri"`
-			URLList    []string `json:"url_list"`
-			Width      float64  `json:"width"`
-		} `json:"avatar_medium"`
-		AvatarThumb struct {
-			AvgColor   string   `json:"avg_color"`
-			Height     float64  `json:"height"`
-			ImageType  float64  `json:"image_type"`
-			IsAnimated bool     `json:"is_animated"`
-			OpenWebURL string   `json:"open_web_url"`
-			URI        string   `json:"uri"`
-			URLList    []string `json:"url_list"`
-			Width      float64  `json:"width"`
-		} `json:"avatar_thumb"`
-		BadgeImageList           []interface{} `json:"badge_image_list"`
-		BadgeList                []interface{} `json:"badge_list"`
-		BgImgURL                 string        `json:"bg_img_url"`
-		BioDescription           string        `json:"bio_description"`
-		BlockStatus              float64       `json:"block_status"`
-		BorderList               []interface{} `json:"border_list"`
-		CommentRestrict          float64       `json:"comment_restrict"`
-		CommerceWebcastConfigIds []interface{} `json:"commerce_webcast_config_ids"`
-		Constellation            string        `json:"constellation"`
-		CreateTime               float64       `json:"create_time"`
-		DisableIchat             float64       `json:"disable_ichat"`
-		DisplayID                string        `json:"display_id"`
-		EnableIchatImg           float64       `json:"enable_ichat_img"`
-		Exp                      float64       `json:"exp"`
-		FanTicketCount           float64       `json:"fan_ticket_count"`
-		FoldStrangerChat         bool          `json:"fold_stranger_chat"`
-		FollowInfo               struct {
-			FollowStatus   float64 `json:"follow_status"`
-			FollowerCount  float64 `json:"follower_count"`
-			FollowingCount float64 `json:"following_count"`
-			PushStatus     float64 `json:"push_status"`
-		} `json:"follow_info"`
-		FollowStatus        float64       `json:"follow_status"`
-		IchatRestrictType   float64       `json:"ichat_restrict_type"`
-		ID                  float64       `json:"id"`
-		IDStr               string        `json:"id_str"`
-		IsFollower          bool          `json:"is_follower"`
-		IsFollowing         bool          `json:"is_following"`
-		LinkMicStats        float64       `json:"link_mic_stats"`
-		MediaBadgeImageList []interface{} `json:"media_badge_image_list"`
-		ModifyTime          float64       `json:"modify_time"`
-		NeedProfileGuide    bool          `json:"need_profile_guide"`
-		NewRealTimeIcons    []interface{} `json:"new_real_time_icons"`
-		Nickname            string        `json:"nickname"`
-		OwnRoom             struct {
-			RoomIds    []int64  `json:"room_ids"`
-			RoomIdsStr []string `json:"room_ids_str"`
-		} `json:"own_room"`
-		PayGrade struct {
-			GradeBanner        string        `json:"grade_banner"`
-			GradeDescribe      string        `json:"grade_describe"`
-			GradeIconList      []interface{} `json:"grade_icon_list"`
-			Level              float64       `json:"level"`
-			Name               string        `json:"name"`
-			NextName           string        `json:"next_name"`
-			NextPrivileges     string        `json:"next_privileges"`
-			Score              float64       `json:"score"`
-			ScreenChatType     float64       `json:"screen_chat_type"`
-			UpgradeNeedConsume float64       `json:"upgrade_need_consume"`
-		} `json:"pay_grade"`
-		PayScore           float64       `json:"pay_score"`
-		PayScores          float64       `json:"pay_scores"`
-		PushCommentStatus  bool          `json:"push_comment_status"`
-		PushDigg           bool          `json:"push_digg"`
-		PushFollow         bool          `json:"push_follow"`
-		PushFriendAction   bool          `json:"push_friend_action"`
-		PushIchat          bool          `json:"push_ichat"`
-		PushStatus         bool          `json:"push_status"`
-		PushVideoPost      bool          `json:"push_video_post"`
-		PushVideoRecommend bool          `json:"push_video_recommend"`
-		RealTimeIcons      []interface{} `json:"real_time_icons"`
-		SecUID             string        `json:"sec_uid"`
-		Secret             float64       `json:"secret"`
-		ShareQrcodeURI     string        `json:"share_qrcode_uri"`
-		SpecialID          string        `json:"special_id"`
-		Status             float64       `json:"status"`
-		TicketCount        float64       `json:"ticket_count"`
-		TopFans            []*TopFan     `json:"top_fans"`
-		TopVipNo           float64       `json:"top_vip_no"`
-		UserAttr           struct {
-			IsAdmin      bool    `json:"is_admin"`
-			IsMuted      bool    `json:"is_muted"`
-			IsSuperAdmin bool    `json:"is_super_admin"`
-			MuteDuration float64 `json:"mute_duration"`
-		} `json:"user_attr"`
-		UserRole                    float64 `json:"user_role"`
-		Verified                    bool    `json:"verified"`
-		VerifiedContent             string  `json:"verified_content"`
-		VerifiedReason              string  `json:"verified_reason"`
-		WithCarManagementPermission bool    `json:"with_car_management_permission"`
-		WithCommercePermission      bool    `json:"with_commerce_permission"`
-		WithFusionShopEntry         bool    `json:"with_fusion_shop_entry"`
-	} `json:"owner"`
-	OwnerDeviceID        float64 `json:"owner_device_id"`
-	OwnerDeviceIDStr     string  `json:"owner_device_id_str"`
-	OwnerUserID          float64 `json:"owner_user_id"`
-	OwnerUserIDStr       string  `json:"owner_user_id_str"`
-	PreEnterTime         float64 `json:"pre_enter_time"`
-	PreviewFlowTag       float64 `json:"preview_flow_tag"`
-	RanklistAudienceType float64 `json:"ranklist_audience_type"`
-	RelationTag          string  `json:"relation_tag"`
-	Replay               bool    `json:"replay"`
-	RoomAuditStatus      float64 `json:"room_audit_status"`
+	LotteryFinishTime    float64   `json:"lottery_finish_time"`
+	MosaicStatus         float64   `json:"mosaic_status"`
+	OsType               float64   `json:"os_type"`
+	Owner                *UserData `json:"owner"`
+	OwnerDeviceID        float64   `json:"owner_device_id"`
+	OwnerDeviceIDStr     string    `json:"owner_device_id_str"`
+	OwnerUserID          float64   `json:"owner_user_id"`
+	OwnerUserIDStr       string    `json:"owner_user_id_str"`
+	PreEnterTime         float64   `json:"pre_enter_time"`
+	PreviewFlowTag       float64   `json:"preview_flow_tag"`
+	RanklistAudienceType float64   `json:"ranklist_audience_type"`
+	RelationTag          string    `json:"relation_tag"`
+	Replay               bool      `json:"replay"`
+	RoomAuditStatus      float64   `json:"room_audit_status"`
 	RoomAuth             struct {
 		Banner              float64 `json:"Banner"`
 		BroadcastMessage    float64 `json:"BroadcastMessage"`
@@ -430,7 +420,7 @@ type RoomInfo struct {
 	Title             string    `json:"title"`
 	TopFans           []*TopFan `json:"top_fans"`
 	UseFilter         bool      `json:"use_filter"`
-	UserCount         float64   `json:"user_count"`
+	UserCount         int       `json:"user_count"` // Viewers
 	UserShareText     string    `json:"user_share_text"`
 	VideoFeedTag      string    `json:"video_feed_tag"`
 	WebcastCommentTcs float64   `json:"webcast_comment_tcs"`
@@ -440,7 +430,7 @@ type RoomInfo struct {
 	WithLinkmic       bool      `json:"with_linkmic"`
 }
 
-type GiftInfoRsp struct {
+type giftInfoRsp struct {
 	GiftInfo *GiftInfo `json:"data"`
 	Extra    struct {
 		LogID string `json:"log_id"`
@@ -751,4 +741,249 @@ type TopFan struct {
 		WithCommercePermission      bool    `json:"with_commerce_permission"`
 		WithFusionShopEntry         bool    `json:"with_fusion_shop_entry"`
 	} `json:"user"`
+}
+
+type FeedItem struct {
+	LiveStreams []*LiveStream `json:"data"`
+	Extra       struct {
+		Banner struct {
+			Banners     []interface{} `json:"banners"`
+			BannersType int           `json:"banners_type"`
+			SwitchType  int           `json:"switch_type"`
+			Title       string        `json:"title"`
+			Total       int           `json:"total"`
+		} `json:"banner"`
+		Cost        int    `json:"cost"`
+		HasMore     bool   `json:"has_more"`
+		HashtagText string `json:"hashtag_text"`
+		IsBackup    int    `json:"is_backup"`
+		LogPb       struct {
+			ImprID    string `json:"impr_id"`
+			SessionID int    `json:"session_id"`
+		} `json:"log_pb"`
+		MaxTime     int64  `json:"max_time"`
+		MinTime     int    `json:"min_time"`
+		Now         int64  `json:"now"`
+		Style       int    `json:"style"`
+		Total       int    `json:"total"`
+		UnreadExtra string `json:"unread_extra"`
+	} `json:"extra"`
+	StatusCode int `json:"status_code"`
+}
+
+type LiveStream struct {
+	t *TikTok
+
+	Room      *RoomInfo `json:"data"`
+	DebugInfo string    `json:"debug_info"`
+	FlareInfo struct {
+		IsFlare bool   `json:"is_flare"`
+		TaskID  string `json:"task_id"`
+	} `json:"flare_info"`
+	IsPseudoLiving  bool   `json:"is_pseudo_living"`
+	IsRecommendCard bool   `json:"is_recommend_card"`
+	LiveReason      string `json:"live_reason"`
+	Rid             string `json:"rid"`
+	Type            int    `json:"type"`
+}
+
+type UserData struct {
+	AllowFindByContacts                 bool `json:"allow_find_by_contacts"`
+	AllowOthersDownloadVideo            bool `json:"allow_others_download_video"`
+	AllowOthersDownloadWhenSharingVideo bool `json:"allow_others_download_when_sharing_video"`
+	AllowShareShowProfile               bool `json:"allow_share_show_profile"`
+	AllowShowInGossip                   bool `json:"allow_show_in_gossip"`
+	AllowShowMyAction                   bool `json:"allow_show_my_action"`
+	AllowStrangeComment                 bool `json:"allow_strange_comment"`
+	AllowUnfollowerComment              bool `json:"allow_unfollower_comment"`
+	AllowUseLinkmic                     bool `json:"allow_use_linkmic"`
+	AvatarLarge                         struct {
+		AvgColor   string   `json:"avg_color"`
+		Height     int      `json:"height"`
+		ImageType  int      `json:"image_type"`
+		IsAnimated bool     `json:"is_animated"`
+		OpenWebURL string   `json:"open_web_url"`
+		URI        string   `json:"uri"`
+		URLList    []string `json:"url_list"`
+		Width      int      `json:"width"`
+	} `json:"avatar_large"`
+	AvatarMedium struct {
+		AvgColor   string   `json:"avg_color"`
+		Height     int      `json:"height"`
+		ImageType  int      `json:"image_type"`
+		IsAnimated bool     `json:"is_animated"`
+		OpenWebURL string   `json:"open_web_url"`
+		URI        string   `json:"uri"`
+		URLList    []string `json:"url_list"`
+		Width      int      `json:"width"`
+	} `json:"avatar_medium"`
+	AvatarThumb struct {
+		AvgColor   string   `json:"avg_color"`
+		Height     int      `json:"height"`
+		ImageType  int      `json:"image_type"`
+		IsAnimated bool     `json:"is_animated"`
+		OpenWebURL string   `json:"open_web_url"`
+		URI        string   `json:"uri"`
+		URLList    []string `json:"url_list"`
+		Width      int      `json:"width"`
+	} `json:"avatar_thumb"`
+	BadgeImageList           []interface{} `json:"badge_image_list"`
+	BadgeList                []interface{} `json:"badge_list"`
+	BgImgURL                 string        `json:"bg_img_url"`
+	BioDescription           string        `json:"bio_description"`
+	BlockStatus              int           `json:"block_status"`
+	BorderList               []interface{} `json:"border_list"`
+	CommentRestrict          int           `json:"comment_restrict"`
+	CommerceWebcastConfigIds []interface{} `json:"commerce_webcast_config_ids"`
+	Constellation            string        `json:"constellation"`
+	CreateTime               int           `json:"create_time"`
+	DisableIchat             int           `json:"disable_ichat"`
+	DisplayID                string        `json:"display_id"`
+	EnableIchatImg           int           `json:"enable_ichat_img"`
+	Exp                      int           `json:"exp"`
+	FanTicketCount           int           `json:"fan_ticket_count"`
+	FoldStrangerChat         bool          `json:"fold_stranger_chat"`
+	FollowInfo               struct {
+		FollowStatus   int `json:"follow_status"`
+		FollowerCount  int `json:"follower_count"`
+		FollowingCount int `json:"following_count"`
+		PushStatus     int `json:"push_status"`
+	} `json:"follow_info"`
+	FollowStatus        int           `json:"follow_status"`
+	IchatRestrictType   int           `json:"ichat_restrict_type"`
+	ID                  int64         `json:"id"`
+	IDStr               string        `json:"id_str"`
+	IsFollower          bool          `json:"is_follower"`
+	IsFollowing         bool          `json:"is_following"`
+	LinkMicStats        int           `json:"link_mic_stats"`
+	MediaBadgeImageList []interface{} `json:"media_badge_image_list"`
+	ModifyTime          int           `json:"modify_time"`
+	NeedProfileGuide    bool          `json:"need_profile_guide"`
+	NewRealTimeIcons    []interface{} `json:"new_real_time_icons"`
+	Nickname            string        `json:"nickname"`
+	OwnRoom             struct {
+		RoomIds    []int64  `json:"room_ids"`
+		RoomIdsStr []string `json:"room_ids_str"`
+	} `json:"own_room"`
+	PayGrade struct {
+		GradeBanner        string        `json:"grade_banner"`
+		GradeDescribe      string        `json:"grade_describe"`
+		GradeIconList      []interface{} `json:"grade_icon_list"`
+		Level              int           `json:"level"`
+		Name               string        `json:"name"`
+		NextName           string        `json:"next_name"`
+		NextPrivileges     string        `json:"next_privileges"`
+		Score              int           `json:"score"`
+		ScreenChatType     int           `json:"screen_chat_type"`
+		UpgradeNeedConsume int           `json:"upgrade_need_consume"`
+	} `json:"pay_grade"`
+	PayScore           int           `json:"pay_score"`
+	PayScores          int           `json:"pay_scores"`
+	PushCommentStatus  bool          `json:"push_comment_status"`
+	PushDigg           bool          `json:"push_digg"`
+	PushFollow         bool          `json:"push_follow"`
+	PushFriendAction   bool          `json:"push_friend_action"`
+	PushIchat          bool          `json:"push_ichat"`
+	PushStatus         bool          `json:"push_status"`
+	PushVideoPost      bool          `json:"push_video_post"`
+	PushVideoRecommend bool          `json:"push_video_recommend"`
+	RealTimeIcons      []interface{} `json:"real_time_icons"`
+	SecUID             string        `json:"sec_uid"`
+	Secret             int           `json:"secret"`
+	ShareQrcodeURI     string        `json:"share_qrcode_uri"`
+	SpecialID          string        `json:"special_id"`
+	Status             int           `json:"status"`
+	TicketCount        int           `json:"ticket_count"`
+	TopFans            []interface{} `json:"top_fans"`
+	TopVipNo           int           `json:"top_vip_no"`
+	UserAttr           struct {
+		IsAdmin      bool `json:"is_admin"`
+		IsMuted      bool `json:"is_muted"`
+		IsSuperAdmin bool `json:"is_super_admin"`
+		MuteDuration int  `json:"mute_duration"`
+	} `json:"user_attr"`
+	UserRole                    int    `json:"user_role"`
+	Verified                    bool   `json:"verified"`
+	VerifiedContent             string `json:"verified_content"`
+	VerifiedReason              string `json:"verified_reason"`
+	WithCarManagementPermission bool   `json:"with_car_management_permission"`
+	WithCommercePermission      bool   `json:"with_commerce_permission"`
+	WithFusionShopEntry         bool   `json:"with_fusion_shop_entry"`
+}
+
+type rankListRsp struct {
+	RankList RankList `json:"data"`
+	Extra    struct {
+		Now int64 `json:"now"`
+	} `json:"extra"`
+	StatusCode int `json:"status_code"`
+}
+
+type RankList struct {
+	AnchorShowContribution bool        `json:"anchor_show_contribution"`
+	Anonymous              int         `json:"anonymous"`
+	Currency               string      `json:"currency"`
+	Ranks                  []*RankUser `json:"ranks"`
+	RuleURL                string      `json:"rule_url"`
+	Total                  int         `json:"total"`
+}
+
+type RankUser struct {
+	GapDescription       string    `json:"gap_description"`
+	Rank                 int       `json:"rank"`  // Absolute Rank
+	Score                int       `json:"score"` // Coins Count
+	User                 *UserData `json:"user"`
+	UserRestrictionLevel int       `json:"user_restriction_level"`
+}
+
+type PriceList struct {
+	PriceList []*PriceItem `json:"data"`
+	Extra     struct {
+		ApplePayHintURL                    string        `json:"apple_pay_hint_url"`
+		BadgeIcon                          string        `json:"badge_icon"`
+		Channel                            string        `json:"channel"`
+		ChannelID                          int           `json:"channel_id"`
+		CurrencyList                       []string      `json:"currency_list"`
+		CustomizedIds                      []int         `json:"customized_ids"`
+		DefaultCurrency                    string        `json:"default_currency"`
+		DefaultPacketID                    int           `json:"default_packet_id"`
+		ExtraDiamondList                   []interface{} `json:"extra_diamond_list"`
+		FirstChargePacketID                int           `json:"first_charge_packet_id"`
+		IsDefault                          bool          `json:"is_default"`
+		IsRecommend                        bool          `json:"is_recommend"`
+		LargePayURL                        string        `json:"large_pay_url"`
+		MaxCustomizedDiamondCnt            int           `json:"max_customized_diamond_cnt"`
+		MerchantID                         string        `json:"merchant_id"`
+		MinCustomizedDiamondCnt            int           `json:"min_customized_diamond_cnt"`
+		NeedAuth                           int           `json:"need_auth"`
+		Now                                int64         `json:"now"`
+		PloyTraceID                        int           `json:"ploy_trace_id"`
+		RecentlyPurchasedPacketID          int           `json:"recently_purchased_packet_id"`
+		RecommendedPacketID                int           `json:"recommended_packet_id"`
+		ShouldDisplayCustomizedWebRecharge bool          `json:"should_display_customized_web_recharge"`
+		ShowHint                           int           `json:"show_hint"`
+		SignInfos                          []interface{} `json:"sign_infos"`
+		TotalSigned                        int           `json:"total_signed"`
+	} `json:"extra"`
+	StatusCode int `json:"status_code"`
+}
+
+type PriceItem struct {
+	CouponID      string `json:"coupon_id"`
+	CurrencyPrice []struct {
+		Currency      string `json:"currency"`
+		KeepDot       int    `json:"keep_dot"`
+		OriginalPrice int    `json:"original_price"`
+		Price         int    `json:"price"` // Local Currency Price Cents
+		PriceDot      int    `json:"price_dot"`
+		PriceShowForm string `json:"price_show_form"`
+	} `json:"currency_price"`
+	Describe      string `json:"describe"`
+	DiamondCount  int    `json:"diamond_count"` // Coin Count
+	DiscountPrice int    `json:"discount_price"`
+	ExchangePrice int    `json:"exchange_price"` // Local Currency Price Cents
+	GivingCount   int    `json:"giving_count"`
+	IapID         string `json:"iap_id"`
+	ID            int    `json:"id"`
+	Price         int    `json:"price"` // USD Cents
 }

@@ -1650,8 +1650,6 @@ func (x *WebcastLiveIntroMessage) GetUser() *User {
 	return nil
 }
 
-// Example:
-// {"debug":false,"t_22_2_live_star_br":{"_extra":{"step":null,"now_millis":1647883025704,"now":"2022-03-21T17:17:05.704027216Z","extra_map":{"activity_time":{"start_time":1647572400,"end_time":1648436398,"show_time":1648523399},"age_interval":{"status":false},"anchor_track":{"track":0,"pre_track":0},"final_anchor_daily_task":{"role":1,"task_type":1,"task_item":[],"current_interval":-1},"final_user_daily_task":{"role":2,"task_type":1,"task_item":[],"current_interval":-1},"final_user_lottery":{"score":0},"phase_time":{"phase":1,"preliminary_phase":{"start_time":1647572400000,"end_time":1648177199000},"final_phase":{"start_time":1648177200000,"end_time":1648436399000},"show_phase":{"start_time":1648436400000,"end_time":1648522799000}},"preliminary_anchor_daily_task":{"role":1,"task_type":1,"task_item":[{"name":"","phase_type":1,"phase_index":0,"filter":false,"phase":[{"condition":[{"current":0,"target":1800,"phase":0,"typ":101,"finish_millis":0,"already_repeat_count":0},{"current":0,"target":2,"phase":0,"typ":105,"finish_millis":0,"already_repeat_count":0},{"current":0,"target":30,"phase":0,"typ":115,"finish_millis":0,"already_repeat_count":0}],"reward":[{"reward_type":1001,"reward_id":"low_flare_card_pre_task_daily_reward_id","reward_count":1},{"reward_type":21,"reward_id":"preliminary_anchor_daily_task_flare_notice","reward_count":1},{"reward_type":102,"reward_id":"preliminary_anchor_daily_task_finish_count","reward_count":1}],"finish_millis":0}],"interval":null}],"current_interval":4},"preliminary_user_daily_task":{"role":2,"task_type":1,"task_item":[{"name":"","phase_type":1,"phase_index":0,"filter":false,"phase":[{"condition":[{"current":0,"target":600,"phase":0,"typ":201,"finish_millis":0,"already_repeat_count":0},{"current":0,"target":1,"phase":0,"typ":219,"finish_millis":0,"already_repeat_count":0},{"current":0,"target":10,"phase":0,"typ":209,"finish_millis":0,"already_repeat_count":0}],"reward":[{"reward_type":1,"reward_id":"user_medal","reward_count":1},{"reward_type":21,"reward_id":"user_daily_task_notice","reward_count":1},{"reward_type":29,"reward_id":"special_gift_unlock_group_1","reward_count":1}],"finish_millis":0}],"interval":null}],"current_interval":4},"preliminary_user_lottery":{"score":0},"rank_banner":null,"user_basic":{"anchor_user_same_region":false,"has_anchor_opt_out":false,"is_anchor_qualified":false,"is_user_login":false}},"time_zone":-10800},"_just_anchor":true,"debug":false,"user":"6877484104913257473"},"user":"6877484104913257473"}
 type WebcastInRoomBannerMessage struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1697,6 +1695,542 @@ func (x *WebcastInRoomBannerMessage) GetJson() string {
 		return x.Json
 	}
 	return ""
+}
+
+type MessageType struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Type string `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
+}
+
+func (x *MessageType) Reset() {
+	*x = MessageType{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_tiktok_proto_msgTypes[30]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MessageType) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MessageType) ProtoMessage() {}
+
+func (x *MessageType) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tiktok_proto_msgTypes[30]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MessageType.ProtoReflect.Descriptor instead.
+func (*MessageType) Descriptor() ([]byte, []int) {
+	return file_proto_tiktok_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *MessageType) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+type RoomMessage struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Type *MessageType `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
+	Text string       `protobuf:"bytes,2,opt,name=text,proto3" json:"text,omitempty"`
+}
+
+func (x *RoomMessage) Reset() {
+	*x = RoomMessage{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_tiktok_proto_msgTypes[31]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RoomMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RoomMessage) ProtoMessage() {}
+
+func (x *RoomMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tiktok_proto_msgTypes[31]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RoomMessage.ProtoReflect.Descriptor instead.
+func (*RoomMessage) Descriptor() ([]byte, []int) {
+	return file_proto_tiktok_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *RoomMessage) GetType() *MessageType {
+	if x != nil {
+		return x.Type
+	}
+	return nil
+}
+
+func (x *RoomMessage) GetText() string {
+	if x != nil {
+		return x.Text
+	}
+	return ""
+}
+
+type WebcastWishlistUpdateMessage struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Type  *MessageType `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
+	Gitfs *GiftUpdates `protobuf:"bytes,2,opt,name=gitfs,proto3" json:"gitfs,omitempty"`
+}
+
+func (x *WebcastWishlistUpdateMessage) Reset() {
+	*x = WebcastWishlistUpdateMessage{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_tiktok_proto_msgTypes[32]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *WebcastWishlistUpdateMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WebcastWishlistUpdateMessage) ProtoMessage() {}
+
+func (x *WebcastWishlistUpdateMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tiktok_proto_msgTypes[32]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WebcastWishlistUpdateMessage.ProtoReflect.Descriptor instead.
+func (*WebcastWishlistUpdateMessage) Descriptor() ([]byte, []int) {
+	return file_proto_tiktok_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *WebcastWishlistUpdateMessage) GetType() *MessageType {
+	if x != nil {
+		return x.Type
+	}
+	return nil
+}
+
+func (x *WebcastWishlistUpdateMessage) GetGitfs() *GiftUpdates {
+	if x != nil {
+		return x.Gitfs
+	}
+	return nil
+}
+
+type GiftUpdates struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SomeInt uint64          `protobuf:"varint,1,opt,name=some_int,json=someInt,proto3" json:"some_int,omitempty"`
+	Gifts   []*WishListGift `protobuf:"bytes,2,rep,name=gifts,proto3" json:"gifts,omitempty"`
+	// causes errors as sometimes the username is a list of ids
+	// repeated GiftUser users = 3;
+	Count uint64 `protobuf:"varint,4,opt,name=count,proto3" json:"count,omitempty"`
+	Msg   string `protobuf:"bytes,5,opt,name=msg,proto3" json:"msg,omitempty"`
+}
+
+func (x *GiftUpdates) Reset() {
+	*x = GiftUpdates{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_tiktok_proto_msgTypes[33]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GiftUpdates) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GiftUpdates) ProtoMessage() {}
+
+func (x *GiftUpdates) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tiktok_proto_msgTypes[33]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GiftUpdates.ProtoReflect.Descriptor instead.
+func (*GiftUpdates) Descriptor() ([]byte, []int) {
+	return file_proto_tiktok_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *GiftUpdates) GetSomeInt() uint64 {
+	if x != nil {
+		return x.SomeInt
+	}
+	return 0
+}
+
+func (x *GiftUpdates) GetGifts() []*WishListGift {
+	if x != nil {
+		return x.Gifts
+	}
+	return nil
+}
+
+func (x *GiftUpdates) GetCount() uint64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+func (x *GiftUpdates) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+type GiftUser struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id             uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	ProfilePicture []string `protobuf:"bytes,3,rep,name=profile_picture,json=profilePicture,proto3" json:"profile_picture,omitempty"`
+	Username       string   `protobuf:"bytes,4,opt,name=username,proto3" json:"username,omitempty"`
+	Unknown        uint64   `protobuf:"varint,5,opt,name=unknown,proto3" json:"unknown,omitempty"` // something that relates to the gifts I expect
+}
+
+func (x *GiftUser) Reset() {
+	*x = GiftUser{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_tiktok_proto_msgTypes[34]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GiftUser) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GiftUser) ProtoMessage() {}
+
+func (x *GiftUser) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tiktok_proto_msgTypes[34]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GiftUser.ProtoReflect.Descriptor instead.
+func (*GiftUser) Descriptor() ([]byte, []int) {
+	return file_proto_tiktok_proto_rawDescGZIP(), []int{34}
+}
+
+func (x *GiftUser) GetId() uint64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *GiftUser) GetProfilePicture() []string {
+	if x != nil {
+		return x.ProfilePicture
+	}
+	return nil
+}
+
+func (x *GiftUser) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *GiftUser) GetUnknown() uint64 {
+	if x != nil {
+		return x.Unknown
+	}
+	return 0
+}
+
+type WishListGift struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Type          uint64 `protobuf:"varint,1,opt,name=type,proto3" json:"type,omitempty"`
+	Id            uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	ReceivedCount uint64 `protobuf:"varint,3,opt,name=received_count,json=receivedCount,proto3" json:"received_count,omitempty"`
+	GoalCount     uint64 `protobuf:"varint,4,opt,name=goal_count,json=goalCount,proto3" json:"goal_count,omitempty"`
+	Gift          *Gift  `protobuf:"bytes,5,opt,name=gift,proto3" json:"gift,omitempty"`
+}
+
+func (x *WishListGift) Reset() {
+	*x = WishListGift{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_tiktok_proto_msgTypes[35]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *WishListGift) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WishListGift) ProtoMessage() {}
+
+func (x *WishListGift) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tiktok_proto_msgTypes[35]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WishListGift.ProtoReflect.Descriptor instead.
+func (*WishListGift) Descriptor() ([]byte, []int) {
+	return file_proto_tiktok_proto_rawDescGZIP(), []int{35}
+}
+
+func (x *WishListGift) GetType() uint64 {
+	if x != nil {
+		return x.Type
+	}
+	return 0
+}
+
+func (x *WishListGift) GetId() uint64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *WishListGift) GetReceivedCount() uint64 {
+	if x != nil {
+		return x.ReceivedCount
+	}
+	return 0
+}
+
+func (x *WishListGift) GetGoalCount() uint64 {
+	if x != nil {
+		return x.GoalCount
+	}
+	return 0
+}
+
+func (x *WishListGift) GetGift() *Gift {
+	if x != nil {
+		return x.Gift
+	}
+	return nil
+}
+
+type Gift struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Imgs *GiftImg `protobuf:"bytes,2,opt,name=imgs,proto3" json:"imgs,omitempty"`
+	Cost uint64   `protobuf:"varint,3,opt,name=cost,proto3" json:"cost,omitempty"`
+}
+
+func (x *Gift) Reset() {
+	*x = Gift{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_tiktok_proto_msgTypes[36]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Gift) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Gift) ProtoMessage() {}
+
+func (x *Gift) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tiktok_proto_msgTypes[36]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Gift.ProtoReflect.Descriptor instead.
+func (*Gift) Descriptor() ([]byte, []int) {
+	return file_proto_tiktok_proto_rawDescGZIP(), []int{36}
+}
+
+func (x *Gift) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Gift) GetImgs() *GiftImg {
+	if x != nil {
+		return x.Imgs
+	}
+	return nil
+}
+
+func (x *Gift) GetCost() uint64 {
+	if x != nil {
+		return x.Cost
+	}
+	return 0
+}
+
+type GiftImg struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Urls  []string `protobuf:"bytes,1,rep,name=urls,proto3" json:"urls,omitempty"`
+	Color string   `protobuf:"bytes,5,opt,name=color,proto3" json:"color,omitempty"`
+}
+
+func (x *GiftImg) Reset() {
+	*x = GiftImg{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_tiktok_proto_msgTypes[37]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GiftImg) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GiftImg) ProtoMessage() {}
+
+func (x *GiftImg) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tiktok_proto_msgTypes[37]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GiftImg.ProtoReflect.Descriptor instead.
+func (*GiftImg) Descriptor() ([]byte, []int) {
+	return file_proto_tiktok_proto_rawDescGZIP(), []int{37}
+}
+
+func (x *GiftImg) GetUrls() []string {
+	if x != nil {
+		return x.Urls
+	}
+	return nil
+}
+
+func (x *GiftImg) GetColor() string {
+	if x != nil {
+		return x.Color
+	}
+	return ""
+}
+
+type WebcastGiftBroadcastMessage struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *WebcastGiftBroadcastMessage) Reset() {
+	*x = WebcastGiftBroadcastMessage{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_tiktok_proto_msgTypes[38]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *WebcastGiftBroadcastMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WebcastGiftBroadcastMessage) ProtoMessage() {}
+
+func (x *WebcastGiftBroadcastMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_tiktok_proto_msgTypes[38]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WebcastGiftBroadcastMessage.ProtoReflect.Descriptor instead.
+func (*WebcastGiftBroadcastMessage) Descriptor() ([]byte, []int) {
+	return file_proto_tiktok_proto_rawDescGZIP(), []int{38}
 }
 
 var File_proto_tiktok_proto protoreflect.FileDescriptor
@@ -1885,9 +2419,59 @@ var file_proto_tiktok_proto_rawDesc = []byte{
 	0x22, 0x30, 0x0a, 0x1a, 0x57, 0x65, 0x62, 0x63, 0x61, 0x73, 0x74, 0x49, 0x6e, 0x52, 0x6f, 0x6f,
 	0x6d, 0x42, 0x61, 0x6e, 0x6e, 0x65, 0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x12,
 	0x0a, 0x04, 0x6a, 0x73, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6a, 0x73,
-	0x6f, 0x6e, 0x42, 0x16, 0x5a, 0x14, 0x2e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x3b, 0x67, 0x6f,
-	0x74, 0x69, 0x6b, 0x74, 0x6f, 0x6b, 0x6c, 0x69, 0x76, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x6f, 0x6e, 0x22, 0x21, 0x0a, 0x0b, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x54, 0x79, 0x70,
+	0x65, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x04, 0x74, 0x79, 0x70, 0x65, 0x22, 0x4a, 0x0a, 0x0b, 0x52, 0x6f, 0x6f, 0x6d, 0x4d, 0x65, 0x73,
+	0x73, 0x61, 0x67, 0x65, 0x12, 0x27, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x13, 0x2e, 0x54, 0x69, 0x6b, 0x54, 0x6f, 0x6b, 0x2e, 0x4d, 0x65, 0x73, 0x73,
+	0x61, 0x67, 0x65, 0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x12, 0x0a,
+	0x04, 0x74, 0x65, 0x78, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x65, 0x78,
+	0x74, 0x22, 0x72, 0x0a, 0x1c, 0x57, 0x65, 0x62, 0x63, 0x61, 0x73, 0x74, 0x57, 0x69, 0x73, 0x68,
+	0x6c, 0x69, 0x73, 0x74, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x12, 0x27, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x13, 0x2e, 0x54, 0x69, 0x6b, 0x54, 0x6f, 0x6b, 0x2e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
+	0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x29, 0x0a, 0x05, 0x67, 0x69,
+	0x74, 0x66, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x54, 0x69, 0x6b, 0x54,
+	0x6f, 0x6b, 0x2e, 0x47, 0x69, 0x66, 0x74, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x73, 0x52, 0x05,
+	0x67, 0x69, 0x74, 0x66, 0x73, 0x22, 0x7c, 0x0a, 0x0b, 0x47, 0x69, 0x66, 0x74, 0x55, 0x70, 0x64,
+	0x61, 0x74, 0x65, 0x73, 0x12, 0x19, 0x0a, 0x08, 0x73, 0x6f, 0x6d, 0x65, 0x5f, 0x69, 0x6e, 0x74,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x73, 0x6f, 0x6d, 0x65, 0x49, 0x6e, 0x74, 0x12,
+	0x2a, 0x0a, 0x05, 0x67, 0x69, 0x66, 0x74, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14,
+	0x2e, 0x54, 0x69, 0x6b, 0x54, 0x6f, 0x6b, 0x2e, 0x57, 0x69, 0x73, 0x68, 0x4c, 0x69, 0x73, 0x74,
+	0x47, 0x69, 0x66, 0x74, 0x52, 0x05, 0x67, 0x69, 0x66, 0x74, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x63,
+	0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x04, 0x52, 0x05, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
+	0x6d, 0x73, 0x67, 0x22, 0x79, 0x0a, 0x08, 0x47, 0x69, 0x66, 0x74, 0x55, 0x73, 0x65, 0x72, 0x12,
+	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12,
+	0x27, 0x0a, 0x0f, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x5f, 0x70, 0x69, 0x63, 0x74, 0x75,
+	0x72, 0x65, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0e, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c,
+	0x65, 0x50, 0x69, 0x63, 0x74, 0x75, 0x72, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72,
+	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72,
+	0x6e, 0x61, 0x6d, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x75, 0x6e, 0x6b, 0x6e, 0x6f, 0x77, 0x6e, 0x18,
+	0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x75, 0x6e, 0x6b, 0x6e, 0x6f, 0x77, 0x6e, 0x22, 0x9a,
+	0x01, 0x0a, 0x0c, 0x57, 0x69, 0x73, 0x68, 0x4c, 0x69, 0x73, 0x74, 0x47, 0x69, 0x66, 0x74, 0x12,
+	0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x04, 0x74,
+	0x79, 0x70, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x02, 0x69, 0x64, 0x12, 0x25, 0x0a, 0x0e, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x5f,
+	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0d, 0x72, 0x65, 0x63,
+	0x65, 0x69, 0x76, 0x65, 0x64, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x67, 0x6f,
+	0x61, 0x6c, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x04, 0x52, 0x09,
+	0x67, 0x6f, 0x61, 0x6c, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x20, 0x0a, 0x04, 0x67, 0x69, 0x66,
+	0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x54, 0x69, 0x6b, 0x54, 0x6f, 0x6b,
+	0x2e, 0x47, 0x69, 0x66, 0x74, 0x52, 0x04, 0x67, 0x69, 0x66, 0x74, 0x22, 0x53, 0x0a, 0x04, 0x47,
+	0x69, 0x66, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x23, 0x0a, 0x04, 0x69, 0x6d, 0x67, 0x73, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x54, 0x69, 0x6b, 0x54, 0x6f, 0x6b, 0x2e, 0x47,
+	0x69, 0x66, 0x74, 0x49, 0x6d, 0x67, 0x52, 0x04, 0x69, 0x6d, 0x67, 0x73, 0x12, 0x12, 0x0a, 0x04,
+	0x63, 0x6f, 0x73, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x04, 0x63, 0x6f, 0x73, 0x74,
+	0x22, 0x33, 0x0a, 0x07, 0x47, 0x69, 0x66, 0x74, 0x49, 0x6d, 0x67, 0x12, 0x12, 0x0a, 0x04, 0x75,
+	0x72, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x04, 0x75, 0x72, 0x6c, 0x73, 0x12,
+	0x14, 0x0a, 0x05, 0x63, 0x6f, 0x6c, 0x6f, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x63, 0x6f, 0x6c, 0x6f, 0x72, 0x22, 0x1d, 0x0a, 0x1b, 0x57, 0x65, 0x62, 0x63, 0x61, 0x73, 0x74,
+	0x47, 0x69, 0x66, 0x74, 0x42, 0x72, 0x6f, 0x61, 0x64, 0x63, 0x61, 0x73, 0x74, 0x4d, 0x65, 0x73,
+	0x73, 0x61, 0x67, 0x65, 0x42, 0x16, 0x5a, 0x14, 0x2e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x3b,
+	0x67, 0x6f, 0x74, 0x69, 0x6b, 0x74, 0x6f, 0x6b, 0x6c, 0x69, 0x76, 0x65, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1902,38 +2486,47 @@ func file_proto_tiktok_proto_rawDescGZIP() []byte {
 	return file_proto_tiktok_proto_rawDescData
 }
 
-var file_proto_tiktok_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
+var file_proto_tiktok_proto_msgTypes = make([]protoimpl.MessageInfo, 39)
 var file_proto_tiktok_proto_goTypes = []interface{}{
-	(*WebcastResponse)(nil),            // 0: TikTok.WebcastResponse
-	(*Message)(nil),                    // 1: TikTok.Message
-	(*WebsocketParam)(nil),             // 2: TikTok.WebsocketParam
-	(*WebcastControlMessage)(nil),      // 3: TikTok.WebcastControlMessage
-	(*WebcastRoomUserSeqMessage)(nil),  // 4: TikTok.WebcastRoomUserSeqMessage
-	(*WebcastChatMessage)(nil),         // 5: TikTok.WebcastChatMessage
-	(*WebcastMemberMessage)(nil),       // 6: TikTok.WebcastMemberMessage
-	(*WebcastGiftMessage)(nil),         // 7: TikTok.WebcastGiftMessage
-	(*WebcastLinkMicBattle)(nil),       // 8: TikTok.WebcastLinkMicBattle
-	(*WebcastLinkMicBattleItems)(nil),  // 9: TikTok.WebcastLinkMicBattleItems
-	(*WebcastLinkMicBattleGroup)(nil),  // 10: TikTok.WebcastLinkMicBattleGroup
-	(*WebcastLinkMicArmies)(nil),       // 11: TikTok.WebcastLinkMicArmies
-	(*WebcastLinkMicArmiesItems)(nil),  // 12: TikTok.WebcastLinkMicArmiesItems
-	(*WebcastLinkMicArmiesGroup)(nil),  // 13: TikTok.WebcastLinkMicArmiesGroup
-	(*WebcastSocialMessage)(nil),       // 14: TikTok.WebcastSocialMessage
-	(*WebcastLikeMessage)(nil),         // 15: TikTok.WebcastLikeMessage
-	(*WebcastQuestionNewMessage)(nil),  // 16: TikTok.WebcastQuestionNewMessage
-	(*QuestionDetails)(nil),            // 17: TikTok.QuestionDetails
-	(*WebcastMessageEvent)(nil),        // 18: TikTok.WebcastMessageEvent
-	(*WebcastMessageEventDetails)(nil), // 19: TikTok.WebcastMessageEventDetails
-	(*User)(nil),                       // 20: TikTok.User
-	(*LinkUser)(nil),                   // 21: TikTok.LinkUser
-	(*ProfilePicture)(nil),             // 22: TikTok.ProfilePicture
-	(*UserExtraAttributes)(nil),        // 23: TikTok.UserExtraAttributes
-	(*UserBadgesAttributes)(nil),       // 24: TikTok.UserBadgesAttributes
-	(*UserBadge)(nil),                  // 25: TikTok.UserBadge
-	(*WebcastWebsocketMessage)(nil),    // 26: TikTok.WebcastWebsocketMessage
-	(*WebcastWebsocketAck)(nil),        // 27: TikTok.WebcastWebsocketAck
-	(*WebcastLiveIntroMessage)(nil),    // 28: TikTok.WebcastLiveIntroMessage
-	(*WebcastInRoomBannerMessage)(nil), // 29: TikTok.WebcastInRoomBannerMessage
+	(*WebcastResponse)(nil),              // 0: TikTok.WebcastResponse
+	(*Message)(nil),                      // 1: TikTok.Message
+	(*WebsocketParam)(nil),               // 2: TikTok.WebsocketParam
+	(*WebcastControlMessage)(nil),        // 3: TikTok.WebcastControlMessage
+	(*WebcastRoomUserSeqMessage)(nil),    // 4: TikTok.WebcastRoomUserSeqMessage
+	(*WebcastChatMessage)(nil),           // 5: TikTok.WebcastChatMessage
+	(*WebcastMemberMessage)(nil),         // 6: TikTok.WebcastMemberMessage
+	(*WebcastGiftMessage)(nil),           // 7: TikTok.WebcastGiftMessage
+	(*WebcastLinkMicBattle)(nil),         // 8: TikTok.WebcastLinkMicBattle
+	(*WebcastLinkMicBattleItems)(nil),    // 9: TikTok.WebcastLinkMicBattleItems
+	(*WebcastLinkMicBattleGroup)(nil),    // 10: TikTok.WebcastLinkMicBattleGroup
+	(*WebcastLinkMicArmies)(nil),         // 11: TikTok.WebcastLinkMicArmies
+	(*WebcastLinkMicArmiesItems)(nil),    // 12: TikTok.WebcastLinkMicArmiesItems
+	(*WebcastLinkMicArmiesGroup)(nil),    // 13: TikTok.WebcastLinkMicArmiesGroup
+	(*WebcastSocialMessage)(nil),         // 14: TikTok.WebcastSocialMessage
+	(*WebcastLikeMessage)(nil),           // 15: TikTok.WebcastLikeMessage
+	(*WebcastQuestionNewMessage)(nil),    // 16: TikTok.WebcastQuestionNewMessage
+	(*QuestionDetails)(nil),              // 17: TikTok.QuestionDetails
+	(*WebcastMessageEvent)(nil),          // 18: TikTok.WebcastMessageEvent
+	(*WebcastMessageEventDetails)(nil),   // 19: TikTok.WebcastMessageEventDetails
+	(*User)(nil),                         // 20: TikTok.User
+	(*LinkUser)(nil),                     // 21: TikTok.LinkUser
+	(*ProfilePicture)(nil),               // 22: TikTok.ProfilePicture
+	(*UserExtraAttributes)(nil),          // 23: TikTok.UserExtraAttributes
+	(*UserBadgesAttributes)(nil),         // 24: TikTok.UserBadgesAttributes
+	(*UserBadge)(nil),                    // 25: TikTok.UserBadge
+	(*WebcastWebsocketMessage)(nil),      // 26: TikTok.WebcastWebsocketMessage
+	(*WebcastWebsocketAck)(nil),          // 27: TikTok.WebcastWebsocketAck
+	(*WebcastLiveIntroMessage)(nil),      // 28: TikTok.WebcastLiveIntroMessage
+	(*WebcastInRoomBannerMessage)(nil),   // 29: TikTok.WebcastInRoomBannerMessage
+	(*MessageType)(nil),                  // 30: TikTok.MessageType
+	(*RoomMessage)(nil),                  // 31: TikTok.RoomMessage
+	(*WebcastWishlistUpdateMessage)(nil), // 32: TikTok.WebcastWishlistUpdateMessage
+	(*GiftUpdates)(nil),                  // 33: TikTok.GiftUpdates
+	(*GiftUser)(nil),                     // 34: TikTok.GiftUser
+	(*WishListGift)(nil),                 // 35: TikTok.WishListGift
+	(*Gift)(nil),                         // 36: TikTok.Gift
+	(*GiftImg)(nil),                      // 37: TikTok.GiftImg
+	(*WebcastGiftBroadcastMessage)(nil),  // 38: TikTok.WebcastGiftBroadcastMessage
 }
 var file_proto_tiktok_proto_depIdxs = []int32{
 	1,  // 0: TikTok.WebcastResponse.messages:type_name -> TikTok.Message
@@ -1961,11 +2554,17 @@ var file_proto_tiktok_proto_depIdxs = []int32{
 	22, // 22: TikTok.LinkUser.profilePicture:type_name -> TikTok.ProfilePicture
 	25, // 23: TikTok.UserBadgesAttributes.badges:type_name -> TikTok.UserBadge
 	20, // 24: TikTok.WebcastLiveIntroMessage.user:type_name -> TikTok.User
-	25, // [25:25] is the sub-list for method output_type
-	25, // [25:25] is the sub-list for method input_type
-	25, // [25:25] is the sub-list for extension type_name
-	25, // [25:25] is the sub-list for extension extendee
-	0,  // [0:25] is the sub-list for field type_name
+	30, // 25: TikTok.RoomMessage.type:type_name -> TikTok.MessageType
+	30, // 26: TikTok.WebcastWishlistUpdateMessage.type:type_name -> TikTok.MessageType
+	33, // 27: TikTok.WebcastWishlistUpdateMessage.gitfs:type_name -> TikTok.GiftUpdates
+	35, // 28: TikTok.GiftUpdates.gifts:type_name -> TikTok.WishListGift
+	36, // 29: TikTok.WishListGift.gift:type_name -> TikTok.Gift
+	37, // 30: TikTok.Gift.imgs:type_name -> TikTok.GiftImg
+	31, // [31:31] is the sub-list for method output_type
+	31, // [31:31] is the sub-list for method input_type
+	31, // [31:31] is the sub-list for extension type_name
+	31, // [31:31] is the sub-list for extension extendee
+	0,  // [0:31] is the sub-list for field type_name
 }
 
 func init() { file_proto_tiktok_proto_init() }
@@ -2334,6 +2933,114 @@ func file_proto_tiktok_proto_init() {
 				return nil
 			}
 		}
+		file_proto_tiktok_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MessageType); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_tiktok_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RoomMessage); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_tiktok_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*WebcastWishlistUpdateMessage); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_tiktok_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GiftUpdates); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_tiktok_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GiftUser); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_tiktok_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*WishListGift); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_tiktok_proto_msgTypes[36].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Gift); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_tiktok_proto_msgTypes[37].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GiftImg); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_tiktok_proto_msgTypes[38].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*WebcastGiftBroadcastMessage); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -2341,7 +3048,7 @@ func file_proto_tiktok_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_tiktok_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   30,
+			NumMessages:   39,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
