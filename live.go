@@ -8,6 +8,7 @@ import (
 	"time"
 
 	pb "github.com/Davincible/gotiktoklive/proto"
+	"golang.org/x/net/context"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -27,6 +28,8 @@ type Live struct {
 	wss      net.Conn
 	wsURL    string
 	wsParams map[string]string
+	close    func()
+	done     func() <-chan struct{}
 
 	ID       string
 	Info     *RoomInfo
@@ -47,6 +50,13 @@ func (t *TikTok) TrackUser(username string) (*Live, error) {
 		t:      t,
 		ID:     id,
 		Events: make(chan interface{}, 100),
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	live.done = ctx.Done
+	live.close = func() {
+		cancel()
+		close(live.Events)
 	}
 
 	roomInfo, err := live.getRoomInfo()

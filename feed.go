@@ -3,6 +3,8 @@ package gotiktoklive
 import (
 	"encoding/json"
 	"strconv"
+
+	"golang.org/x/net/context"
 )
 
 // Feed allows you to fetch reccomended livestreams.
@@ -72,6 +74,13 @@ func (s *LiveStream) Track() (*Live, error) {
 		ID:     s.Rid,
 		Info:   s.Room,
 		Events: make(chan interface{}, 100),
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	live.done = ctx.Done
+	live.close = func() {
+		cancel()
+		close(live.Events)
 	}
 
 	giftInfo, err := live.getGiftInfo()

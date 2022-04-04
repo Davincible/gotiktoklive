@@ -12,10 +12,17 @@ type ChatEvent struct {
 	User    *User
 }
 
+type userEventType string
+
+const (
+	USER_JOIN   userEventType = "user joined the stream"
+	USER_SHARE  userEventType = "user shared the stream"
+	USER_FOLLOW userEventType = "user followed the host"
+)
+
 type UserEvent struct {
-	DisplayType string
-	Label       string
-	User        *User
+	Event userEventType
+	User  *User
 }
 
 type ViewersEvent struct {

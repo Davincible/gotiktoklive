@@ -37,9 +37,8 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 			pt := pt.(*pb.WebcastMemberMessage)
 			if pt.Event != nil && pt.Event.EventDetails != nil {
 				out = UserEvent{
-					DisplayType: pt.Event.EventDetails.DisplayType,
-					Label:       pt.Event.EventDetails.Label,
-					User:        toUser(pt.User),
+					Type: toUserType(pt.Event.EventDetails.DisplayType),
+					User: toUser(pt.User),
 				}
 			}
 		}()
@@ -64,9 +63,8 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 
 			pt := pt.(*pb.WebcastSocialMessage)
 			out = UserEvent{
-				DisplayType: pt.Event.EventDetails.DisplayType,
-				Label:       pt.Event.EventDetails.Label,
-				User:        toUser(pt.User),
+				Type: toUserType(pt.Event.EventDetails.DisplayType),
+				User: toUser(pt.User),
 			}
 		}()
 	case "WebcastGiftMessage":
@@ -234,6 +232,8 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 			pt := pt.(*pb.WebcastWishlistUpdateMessage)
 			out = pt
 		}()
+
+		// Unimplemented Events. Examples can be decoded at : https://protobuf-decoder.netlify.app/
 	case "WebcastEnvelopeMessage":
 		// Example: Ci4KFldlYmNhc3RFbnZlbG9wZU1lc3NhZ2UQhZab7qCftKViGIGWgM7G8KylYjABEjIKEzcwODI2ODgxODIxMzU1ODk2MzgaBm1hbGl2YVoTNzA4MjY3MDc0NTI4NDc3NDY1NxgC
 		return nil, nil
@@ -245,6 +245,15 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 		return nil, nil
 	case "WebcastHourlyRankMessage":
 		// Example: CjUKGFdlYmNhc3RIb3VybHlSYW5rTWVzc2FnZRCFlo/+3bm1pWIYgZaAzsbwrKViIL6S0aL/LxI1CAEiLwoNcG1fbXRfTGl2ZV9XUhIOV2Vla2x5IHJhbmtpbmcaDgoJI2ZmZmZmZmZmIJADMAEYAQ==
+		return nil, nil
+	case "LinkMicMethod":
+		// Example: CiwKDUxpbmtNaWNNZXRob2QQgZaP+unbtaViGIGWgM7G8KylYiDLjN6i/y8oARAEQIKWyO7J9qylYkgEUATYAgI=
+		return nil, nil
+	case "WebcastLinkMessage":
+		// Example: Ci8KEldlYmNhc3RMaW5rTWVzc2FnZRCBlpqQ/dy1pWIYgZaAzsbwrKViIOCL3qL/LxACGIKWyO7J9qylYiAC
+		return nil, nil
+	case "WebcastLinkMicBattlePunishFinish":
+		// Example: Cj8KIFdlYmNhc3RMaW5rTWljQmF0dGxlUHVuaXNoRmluaXNoEIKWiaD+2rWlYhiBloDOxvCspWIgxYreov8vKAEQgpbI7sn2rKViGIGIuJ6L2KnnYSABKIKWoYrLrLWlYg==
 		return nil, nil
 	default:
 		data := base64.StdEncoding.EncodeToString(msg.Binary)
@@ -306,4 +315,16 @@ func copyMap(m map[string]string) map[string]string {
 		out[key] = value
 	}
 	return out
+}
+
+func toUserType(displayType string) userType {
+	switch displayType {
+	case "pm_main_follow_message_viewer_2":
+		return USER_FOLLOW
+	case "pm_mt_guidance_share":
+		return USER_SHARE
+	case "live_room_enter_toast":
+		return USER_JOIN
+	}
+	return userType(fmt.Sprintf("User type not implemented, please report: %s", displayType))
 }

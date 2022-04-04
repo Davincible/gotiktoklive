@@ -83,7 +83,7 @@ func (l *Live) readSocket() {
 	for {
 		hdr, err := rd.NextFrame()
 		if err != nil {
-			l.t.errHandler(err)
+			l.t.errHandler(fmt.Errorf("Failed to read websocket message"))
 		}
 
 		// If msg is ping or close
@@ -127,6 +127,8 @@ func (l *Live) readSocket() {
 
 		// Gracefully shutdown
 		select {
+		case <-l.done():
+			return
 		case <-l.t.done():
 			return
 		default:
@@ -163,6 +165,16 @@ func (l *Live) parseWssMsg(wssMsg []byte) error {
 			if msg != nil {
 				l.Events <- msg
 			}
+
+			// If livestream has ended
+			if m, ok := msg.(ControlEvent); ok && m.Action == 3 {
+				go func() {
+					select {
+					case <-time.After(10 * time.Second):
+						l.close()
+					}
+				}()
+			}
 		}
 		return nil
 	}
@@ -185,6 +197,8 @@ func (l *Live) sendPing() {
 
 	for {
 		select {
+		case <-l.done():
+			return
 		case <-l.t.done():
 			return
 		case <-t.C:

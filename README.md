@@ -143,19 +143,21 @@ type ChatEvent struct {
 
 ### UserEvent
 
+User events are used when a user either joins the stream, shares the stream, or 
+follows the host.
+
 ```go
 type UserEvent struct {
-	DisplayType string
-	Label       string
-	User        *User
+	Event userEventType
+	User  *User
 }
-```
 
-```
-DisplayTypes:
-- pm_main_follow_message_viewer_2
-- pm_mt_guidance_share
-- live_room_enter_toast
+// User Event Types
+const (
+	USER_JOIN   userEventType = "user joined the stream"
+	USER_SHARE  userEventType = "user shared the stream"
+	USER_FOLLOW userEventType = "user followed the host"
+)
 ```
 
 ### ViewersEvent
@@ -228,7 +230,7 @@ Control events are used to broadcast the status of the livestream.
 
 Action values:
 
-- 3 > live stream ended
+- 3: live stream ended
 
 ```go
 type ControlEvent struct {
