@@ -46,9 +46,7 @@ for {
 
 	// You can specify what to do for specific events. All events are listed below.
         case gotiktoklive.UserEvent:
-            if e.DisplayType != "live_room_enter_toast" {
-                fmt.Printf("%T : %s > %s\n", e, e.DisplayType, e.User.FullName)
-            }
+            fmt.Printf("%T : %s %s\n", e, e.Event, e.User.FullName)
 
 	// List viewer count
         case gotiktoklive.ViewersEvent:
