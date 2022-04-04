@@ -200,12 +200,12 @@ func (l *Live) startPolling() {
 		case <-ticker.C:
 			err := l.getRoomData()
 			if err != nil {
-				handleRoutineError(err)
+				l.t.errHandler(err)
 			}
 
 			wss, err := l.tryConnectionUpgrade()
 			if err != nil {
-				handleRoutineError(err)
+				l.t.errHandler(err)
 			}
 			if wss {
 				return

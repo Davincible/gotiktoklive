@@ -194,9 +194,9 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 
 			pt := pt.(*pb.WebcastLiveIntroMessage)
 			out = IntroEvent{
-				ID:          int(pt.Id),
-				Description: pt.Description,
-				User:        toUser(pt.User),
+				ID:    int(pt.Id),
+				Title: pt.Description,
+				User:  toUser(pt.User),
 			}
 		}()
 	case "WebcastInRoomBannerMessage":

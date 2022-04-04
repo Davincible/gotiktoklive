@@ -44,7 +44,7 @@ func NewTikTok() *TikTok {
 		infoHandler:  defaultLogHandler,
 		warnHandler:  defaultLogHandler,
 		debugHandler: defaultLogHandler,
-		errHandler:   panic,
+		errHandler:   routineErrHandler,
 	}
 
 	setupInterruptHandler(
