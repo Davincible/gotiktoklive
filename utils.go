@@ -138,13 +138,11 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 			}
 
 			pt := pt.(*pb.WebcastLinkMicBattle)
-			out = MicBattleEvent{
-				Users: []*User{},
-			}
+			users := []*User{}
 			for _, u := range pt.BattleUsers {
 				user := u.BattleGroup.User
-				p := out.(*MicBattleEvent)
-				p.Users = append(p.Users, &User{
+
+				users = append(users, &User{
 					ID:       int64(user.UserId),
 					Nickname: user.Nickname,
 					FullName: user.UniqueId,
@@ -152,6 +150,9 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 						Urls: user.ProfilePicture.Urls,
 					},
 				})
+			}
+			out = MicBattleEvent{
+				Users: users,
 			}
 		}()
 	case "WebcastLinkMicArmies":
@@ -162,10 +163,7 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 			}
 
 			pt := pt.(*pb.WebcastLinkMicArmies)
-			out = BattlesEvent{
-				Status:  int(pt.BattleStatus),
-				Battles: []*Battle{},
-			}
+			battles := []*Battle{}
 			for _, b := range pt.BattleItems {
 				battle := &Battle{
 					Host:   int64(b.HostUserId),
@@ -181,8 +179,11 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 					}
 					battle.Groups = append(battle.Groups, &group)
 				}
-				p := out.(*BattlesEvent)
-				p.Battles = append(p.Battles, battle)
+				battles = append(battles, battle)
+			}
+			out = BattlesEvent{
+				Status:  int(pt.BattleStatus),
+				Battles: battles,
 			}
 		}()
 	case "WebcastLiveIntroMessage":
@@ -233,6 +234,18 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 			pt := pt.(*pb.WebcastWishlistUpdateMessage)
 			out = pt
 		}()
+	case "WebcastEnvelopeMessage":
+		// Example: Ci4KFldlYmNhc3RFbnZlbG9wZU1lc3NhZ2UQhZab7qCftKViGIGWgM7G8KylYjABEjIKEzcwODI2ODgxODIxMzU1ODk2MzgaBm1hbGl2YVoTNzA4MjY3MDc0NTI4NDc3NDY1NxgC
+		return nil, nil
+	case "WebcastGiftBroadcastMessage":
+		// Example: CkQKG1dlYmNhc3RHaWZ0QnJvYWRjYXN0TWVzc2FnZRCulrKEpuy0pWIYgpaFyNGiraViMAGKAQ5naWZ0X2V4cGVuc2l2ZRCFiM6wwIXJ8WAaiAIKZ2h0dHBzOi8vcDE2LXdlYmNhc3QudGlrdG9rY2RuLmNvbS9pbWcvbWFsaXZhL3dlYmNhc3QtdmEvOTZmMjk3MDYyNGE3OWNkNGQ5NWJlNzI4NDQ5ZDVjODl+dHBsdi1vYmouaW1hZ2UKZ2h0dHBzOi8vcDE5LXdlYmNhc3QudGlrdG9rY2RuLmNvbS9pbWcvbWFsaXZhL3dlYmNhc3QtdmEvOTZmMjk3MDYyNGE3OWNkNGQ5NWJlNzI4NDQ5ZDVjODl+dHBsdi1vYmouaW1hZ2USK3dlYmNhc3QtdmEvOTZmMjk3MDYyNGE3OWNkNGQ5NWJlNzI4NDQ5ZDVjODkqByNCMUNDQTMi/hAK1A4KGFdlYmNhc3RSb29tTm90aWZ5TWVzc2FnZRCulrKEpuy0pWIYgpaFyNGiraViIM+Vp6L/LzABQpoOCiVwbV9tdF9saXZlX2dpZnRfcGxhdGZvcm1fYW5ub3VuY2VtZW50EiJ7MDp1c2VyfSBzZW50IHsxOmdpZnR9IHRvIHsyOnVzZXJ9Gg4KCSNmZmZmZmZmZiCQAyKfBwgLqgGZBwqWBwiFiM6wwIXJ8WAaDVNvbGRpZXJHdXJsODJKjAYKugFodHRwczovL3AxNi1zaWduLnRpa3Rva2Nkbi11cy5jb20vdG9zLXVzZWFzdDUtYXZ0LTAwNjgtdHgvZjEzODBiMTY0MTBmZTFkMzY0MjBkZmRjMDAzYTY0NmJ+dHBsdi10aWt0b2stc2hyaW5rOjcyOjcyLndlYnA/eC1leHBpcmVzPTE2NDkxNTY0MDAmeC1zaWduYXR1cmU9QUY3JTJGeWc3VlNXZFAxT09KR1F6ZFBWM1UwS3MlM0QKrAFodHRwczovL3AxNi1zaWduLnRpa3Rva2Nkbi11cy5jb20vdG9zLXVzZWFzdDUtYXZ0LTAwNjgtdHgvZjEzODBiMTY0MTBmZTFkMzY0MjBkZmRjMDAzYTY0NmJ+YzVfMTAweDEwMC53ZWJwP3gtZXhwaXJlcz0xNjQ5MTU2NDAwJngtc2lnbmF0dXJlPUl4N3NZM2k2ZXolMkJjMVFhYWwyNGxQdHZrYm5jJTNECqwBaHR0cHM6Ly9wMTktc2lnbi50aWt0b2tjZG4tdXMuY29tL3Rvcy11c2Vhc3Q1LWF2dC0wMDY4LXR4L2YxMzgwYjE2NDEwZmUxZDM2NDIwZGZkYzAwM2E2NDZifmM1XzEwMHgxMDAud2VicD94LWV4cGlyZXM9MTY0OTE1NjQwMCZ4LXNpZ25hdHVyZT1FSFNwU01JZFNwMU1GdCUyRmo0cWozcnJDdnpSayUzRAqsAWh0dHBzOi8vcDE2LXNpZ24udGlrdG9rY2RuLXVzLmNvbS90b3MtdXNlYXN0NS1hdnQtMDA2OC10eC9mMTM4MGIxNjQxMGZlMWQzNjQyMGRmZGMwMDNhNjQ2Yn5jNV8xMDB4MTAwLmpwZWc/eC1leHBpcmVzPTE2NDkxNTY0MDAmeC1zaWduYXR1cmU9cWt0c3JsTGQlMkJ1d0J4ZVl1d0hNakN4NTFRTkElM0QSQDEwMHgxMDAvdG9zLXVzZWFzdDUtYXZ0LTAwNjgtdHgvZjEzODBiMTY0MTBmZTFkMzY0MjBkZmRjMDAzYTY0NmKyAQYIgQ8Qwhm6AQCCAgCyAg1zb2xkaWVyZ3VybDgy8gJMTVM0d0xqQUJBQUFBM1dKX0pRWGtpV01jaDBPeW92a3pVRUVfMXZvM1ZDU1ptdVFiRTBzNVVSSG1mLUM2YVdxOERPemZISktLNWtjeiItCAyyASgIli8SIQoObGl2ZV9naWZ0XzYwMzgSD1Rpa1RvayBVbml2ZXJzZRgBIusFCAuqAeUFCuIFCIWI4KSi4efZXhoMU2hhbmUgbGl0dGxlStMECrkBaHR0cHM6Ly9wMTYtc2lnbi1zZy50aWt0b2tjZG4uY29tL3Rvcy1hbGlzZy1hdnQtMDA2OC80MzNkZjRjZmJiMTE2OTliNmU3OGNlN2Q2ZDlhY2U1Nn50cGx2LXRpa3Rvay1zaHJpbms6NzI6NzIud2VicD94LWV4cGlyZXM9MTY0OTE1NjQwMCZ4LXNpZ25hdHVyZT0wckQzSGlWWSUyRlYlMkJmQSUyQm1FYmR6ZHgyUUphZUUlM0QKrAFodHRwczovL3AxNi1zaWduLXNnLnRpa3Rva2Nkbi5jb20vYXdlbWUvMTAweDEwMC90b3MtYWxpc2ctYXZ0LTAwNjgvNDMzZGY0Y2ZiYjExNjk5YjZlNzhjZTdkNmQ5YWNlNTYud2VicD94LWV4cGlyZXM9MTY0OTE1NjQwMCZ4LXNpZ25hdHVyZT01YnVHMk4yQUNTU0VSQnVPUkpUdDIlMkJLYUolMkZ3JTNECqgBaHR0cHM6Ly9wMTYtc2lnbi1zZy50aWt0b2tjZG4uY29tL2F3ZW1lLzEwMHgxMDAvdG9zLWFsaXNnLWF2dC0wMDY4LzQzM2RmNGNmYmIxMTY5OWI2ZTc4Y2U3ZDZkOWFjZTU2LmpwZWc/eC1leHBpcmVzPTE2NDkxNTY0MDAmeC1zaWduYXR1cmU9NU1QTjVodWFnWnVwODdqQVI1cm15dlF4empZJTNEEjsxMDB4MTAwL3Rvcy1hbGlzZy1hdnQtMDA2OC80MzNkZjRjZmJiMTE2OTliNmU3OGNlN2Q2ZDlhY2U1NrIBBwjuAhCiswW6AQCCAgCyAhJub3RvcmlvdXNfcC5pLmdfX1/yAkxNUzR3TGpBQkFBQUFDWlRTcE91bHlvUnVuRjBIOFM4em1yTURuY1AzeWw3OEVkeVo4R254S0tOVmpkVDJKcXNlY3ZZZFJ5NmRXTW5KEipzc2xvY2FsOi8vd2ViY2FzdF9naWZ0X2RpYWxvZz9naWZ0X2lkPTYwMzgYAzLmAQgFEuEBCOMCEBgaW2h0dHBzOi8vcDE2LXdlYmNhc3QudGlrdG9rY2RuLmNvbS9pbWcvYWxpc2cvd2ViY2FzdC1zZy9icm9hZGNhc3RfZ2lmdF9iZy5wbmd+dHBsdi1vYmouaW1hZ2UaW2h0dHBzOi8vcDE5LXdlYmNhc3QudGlrdG9rY2RuLmNvbS9pbWcvYWxpc2cvd2ViY2FzdC1zZy9icm9hZGNhc3RfZ2lmdF9iZy5wbmd+dHBsdi1vYmouaW1hZ2UiIHdlYmNhc3Qtc2cvYnJvYWRjYXN0X2dpZnRfYmcucG5nSg5naWZ0X2Jyb2FkY2FzdA==
+		return nil, nil
+	case "WebcastLinkmicBattleNoticeMessage":
+		// Example: CkAKIVdlYmNhc3RMaW5rbWljQmF0dGxlTm90aWNlTWVzc2FnZRCClq381661pWIYgZaAzsbwrKViILyUyKL/LygBEAQ6fAoiCiBMZWFybiB0byBwbGF5IGFuZCB3aW4gdGhlIG1hdGNoIRIGCgRWaWV3GkxodHRwczovL3dlYmNhc3QudGlrdG9rdi5jb20vZmFsY29uL3dlYmNhc3RfbXQvcGFnZS9saXZlX21hdGNoL2ZhcS9pbmRleC5odG1sIAE=
+		return nil, nil
+	case "WebcastHourlyRankMessage":
+		// Example: CjUKGFdlYmNhc3RIb3VybHlSYW5rTWVzc2FnZRCFlo/+3bm1pWIYgZaAzsbwrKViIL6S0aL/LxI1CAEiLwoNcG1fbXRfTGl2ZV9XUhIOV2Vla2x5IHJhbmtpbmcaDgoJI2ZmZmZmZmZmIJADMAEYAQ==
+		return nil, nil
 	default:
 		data := base64.StdEncoding.EncodeToString(msg.Binary)
 		warnHandler(fmt.Errorf("%w: %s,\n%s", ErrMsgNotImplemented, msg.Type, data))

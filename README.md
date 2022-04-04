@@ -119,8 +119,8 @@ func (t *TikTok) SetWarnHandler(f func(...interface{})) {}
 
 ### RoomEvent
 
-Room events are messages broadcast in the room. The most commont event, is the
-`Type: SystemMessage` at the beginnging a stream gets watched, saying "Welcome to TikTok LIVE! Have fun interacting with others in real-time an
+Room events are messages broadcast in the room. The most common event, is the
+`Type: SystemMessage` at broadcast the beginning a stream gets watched, saying "Welcome to TikTok LIVE! Have fun interacting with others in real-time an
 d remember to follow our Community Guidelines."
 
 ```go
@@ -155,6 +155,7 @@ type UserEvent struct {
 DisplayTypes:
 - pm_main_follow_message_viewer_2
 - pm_mt_guidance_share
+- live_room_enter_toast
 ```
 
 ### ViewersEvent
