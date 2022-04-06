@@ -98,6 +98,12 @@ func (t *TikTok) SetErrorHandler(f func(error)) {}
 func (t *TikTok) SetInfoHandler(f func(...interface{})) {}
 
 func (t *TikTok) SetWarnHandler(f func(...interface{})) {}
+
+// SetProxy will set a proxy for both the http client as well as the websocket.
+// You can manually set a proxy with this method, or by using the HTTPS_PROXY
+//  environment variable.
+// ALL_PROXY can be used to set a proxy only for the websocket.
+func (t *TikTok) SetProxy(url string, insecure bool) error {}
 ```
 
 ## Events

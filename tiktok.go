@@ -101,6 +101,10 @@ func (t *TikTok) SetErrorHandler(f func(error)) {
 	t.errHandler = f
 }
 
+// SetProxy will set a proxy for both the http client as well as the websocket.
+// You can manually set a proxy with this method, or by using the HTTPS_PROXY
+//  environment variable.
+// ALL_PROXY can be used to set a proxy only for the websocket.
 func (t *TikTok) SetProxy(url string, insecure bool) error {
 	uri, err := neturl.Parse(url)
 	if err != nil {
