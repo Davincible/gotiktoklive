@@ -37,8 +37,8 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 			pt := pt.(*pb.WebcastMemberMessage)
 			if pt.Event != nil && pt.Event.EventDetails != nil {
 				out = UserEvent{
-					Type: toUserType(pt.Event.EventDetails.DisplayType),
-					User: toUser(pt.User),
+					Event: toUserType(pt.Event.EventDetails.DisplayType),
+					User:  toUser(pt.User),
 				}
 			}
 		}()
@@ -63,8 +63,8 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 
 			pt := pt.(*pb.WebcastSocialMessage)
 			out = UserEvent{
-				Type: toUserType(pt.Event.EventDetails.DisplayType),
-				User: toUser(pt.User),
+				Event: toUserType(pt.Event.EventDetails.DisplayType),
+				User:  toUser(pt.User),
 			}
 		}()
 	case "WebcastGiftMessage":
@@ -255,6 +255,10 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 	case "WebcastLinkMicBattlePunishFinish":
 		// Example: Cj8KIFdlYmNhc3RMaW5rTWljQmF0dGxlUHVuaXNoRmluaXNoEIKWiaD+2rWlYhiBloDOxvCspWIgxYreov8vKAEQgpbI7sn2rKViGIGIuJ6L2KnnYSABKIKWoYrLrLWlYg==
 		return nil, nil
+	case "WebcastUnauthorizedMemberMessage":
+		// Example: Cj8KIFdlYmNhc3RVbmF1dGhvcml6ZWRNZW1iZXJNZXNzYWdlEIGWipDYoOSmYhiBlon8wPXdpmIgi//59/8vMAEQARojChF3ZWJfbm9ubG9naW5faW1fMRoOCgkjZmZmZmZmZmYgkAMiBjc0MDQzNCo4ChVsaXZlX3Jvb21fZW50ZXJfdG9hc3QSD3swOnVzZXJ9IGpvaW5lZBoOCgkjZmZmZmZmZmYgkAM=
+		// TODO: do something here
+		return nil, nil
 	default:
 		data := base64.StdEncoding.EncodeToString(msg.Binary)
 		warnHandler(fmt.Errorf("%w: %s,\n%s", ErrMsgNotImplemented, msg.Type, data))
@@ -276,6 +280,10 @@ func routineErrHandler(err error) {
 }
 
 func toUser(u *pb.User) *User {
+	if u == nil {
+		return &User{}
+	}
+
 	user := User{
 		ID:       int64(u.UserId),
 		Nickname: u.Nickname,
@@ -317,7 +325,7 @@ func copyMap(m map[string]string) map[string]string {
 	return out
 }
 
-func toUserType(displayType string) userType {
+func toUserType(displayType string) userEventType {
 	switch displayType {
 	case "pm_main_follow_message_viewer_2":
 		return USER_FOLLOW
@@ -326,5 +334,5 @@ func toUserType(displayType string) userType {
 	case "live_room_enter_toast":
 		return USER_JOIN
 	}
-	return userType(fmt.Sprintf("User type not implemented, please report: %s", displayType))
+	return userEventType(fmt.Sprintf("User type not implemented, please report: %s", displayType))
 }

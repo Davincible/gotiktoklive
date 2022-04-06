@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 
 	pb "github.com/Davincible/gotiktoklive/proto"
@@ -48,15 +49,49 @@ func (l *Live) connect(addr string, params map[string]string) error {
 	}
 	vs.Add("room_id", l.ID)
 
-	url := fmt.Sprintf("%s?%s", addr, vs.Encode())
+	wsURL := fmt.Sprintf("%s?%s", addr, vs.Encode())
+
+	// Read proxies from HTTP env variables, HTTPS takes precedent
+	var proxyURI *url.URL
+	envVars := []string{"HTTP_PROXY", "HTTPS_PROXY"}
+	for _, envVar := range envVars {
+		if httpProxy := os.Getenv(envVar); httpProxy != "" {
+			uri, err := url.Parse(httpProxy)
+			if err != nil {
+				l.t.warnHandler(fmt.Errorf("Failed to parse %s url: %w", envVar, err))
+			} else {
+				proxyURI = uri
+			}
+		}
+	}
+
+	// If proxy manually defined, use that
+	if l.t.proxy != nil {
+		proxyURI = l.t.proxy
+	}
+
+	// Default proxy net dial
+	proxyNetDial := proxy.FromEnvironment()
+
+	// If custom URI is defined, genereate proxy net dial from that
+	if proxyURI != nil {
+		dial, err := proxy.FromURL(proxyURI, Direct)
+		if err != nil {
+			l.t.warnHandler(fmt.Errorf("Failed to configure proxy dialer: %w", err))
+		} else {
+			proxyNetDial = dial
+		}
+	}
+
 	dialer := ws.Dialer{
 		Header: ws.HandshakeHeaderHTTP(headers),
 		NetDial: func(ctx context.Context, a, b string) (net.Conn, error) {
-			return proxy.FromEnvironment().Dial(a, b)
+			return proxyNetDial.Dial(a, b)
 		},
+		// NetDial:   proxy.Dial,
 		Protocols: []string{"echo-protocol"},
 	}
-	conn, _, _, err := dialer.Dial(context.Background(), url)
+	conn, _, _, err := dialer.Dial(context.Background(), wsURL)
 	if err != nil {
 		return fmt.Errorf("Failed to connect: %w", err)
 	}

@@ -2,9 +2,11 @@ package gotiktoklive
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"net/http"
 	"net/http/cookiejar"
+	neturl "net/url"
 	"os"
 	"os/signal"
 	"sync"
@@ -28,6 +30,8 @@ type TikTok struct {
 	debugHandler func(...interface{})
 
 	errHandler func(error)
+
+	proxy *neturl.URL
 }
 
 // NewTikTok creates a tiktok instance that allows you to track live streams and
@@ -95,6 +99,22 @@ func (t *TikTok) SetDebugHandler(f func(...interface{})) {
 
 func (t *TikTok) SetErrorHandler(f func(error)) {
 	t.errHandler = f
+}
+
+func (t *TikTok) SetProxy(url string, insecure bool) error {
+	uri, err := neturl.Parse(url)
+	if err != nil {
+		return err
+	}
+
+	t.proxy = uri
+	t.c.Transport = &http.Transport{
+		Proxy: http.ProxyURL(uri),
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: insecure,
+		},
+	}
+	return nil
 }
 
 func setupInterruptHandler(f func(chan os.Signal)) {
