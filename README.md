@@ -316,7 +316,7 @@ for i := 0; i < 5; i++ {
 	}
 }
 
-reccomendedStreams := feed.LiveStreams
+recommendedStreams := feed.LiveStreams
 
 // Start tracking the first stream
 live, err := recommendedStreams[0].Track()
