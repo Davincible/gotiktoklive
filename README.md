@@ -39,23 +39,20 @@ if err != nil {
 }
 
 // Receive livestream events through the live.Events channel
-for {
-    select {
-    case event := <-live.Events:
-        switch e := event.(type) {
+for event := range live.Events {
+    switch e := event.(type) {
 
-	// You can specify what to do for specific events. All events are listed below.
-        case gotiktoklive.UserEvent:
-            fmt.Printf("%T : %s %s\n", e, e.Event, e.User.FullName)
+    // You can specify what to do for specific events. All events are listed below.
+    case gotiktoklive.UserEvent:
+        fmt.Printf("%T : %s %s\n", e, e.Event, e.User.FullName)
 
-	// List viewer count
-        case gotiktoklive.ViewersEvent:
-            fmt.Printf("%T : %d\n", e, e.Viewers)
+    // List viewer count
+    case gotiktoklive.ViewersEvent:
+        fmt.Printf("%T : %d\n", e, e.Viewers)
 
-	// Specify the action for all remaining events
-        default:
-            fmt.Printf("%T : %+v\n", e, e)
-        }
+    // Specify the action for all remaining events
+    default:
+        fmt.Printf("%T : %+v\n", e, e)
     }
 }
 ```
