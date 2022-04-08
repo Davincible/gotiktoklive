@@ -3,6 +3,8 @@ package gotiktoklive
 import (
 	"testing"
 	"time"
+
+	"golang.org/x/net/context"
 )
 
 func TestWebsocket(t *testing.T) {
@@ -20,6 +22,13 @@ func TestWebsocket(t *testing.T) {
 		t:      tiktok,
 		ID:     id,
 		Events: make(chan interface{}, 100),
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	live.done = ctx.Done
+	live.close = func() {
+		cancel()
+		close(live.Events)
 	}
 
 	err = live.getRoomData()
