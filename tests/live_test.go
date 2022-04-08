@@ -7,10 +7,6 @@ import (
 	"github.com/Davincible/gotiktoklive"
 )
 
-const (
-	USERNAME = "promobot.robots"
-)
-
 func TestTrackUser(t *testing.T) {
 	tiktok := gotiktoklive.NewTikTok()
 	live, err := tiktok.TrackUser(USERNAME)

@@ -2,9 +2,7 @@ package gotiktoklive
 
 import (
 	"encoding/json"
-	"fmt"
 	"net"
-	"strings"
 	"time"
 
 	pb "github.com/Davincible/gotiktoklive/proto"
@@ -89,26 +87,15 @@ func (t *TikTok) TrackUser(username string) (*Live, error) {
 }
 
 func (t *TikTok) getRoomID(user string) (string, error) {
-	body, err := t.sendRequest(&reqOptions{
-		Endpoint: fmt.Sprintf(urlUserLive, user),
-		OmitAPI:  true,
-	})
+	userInfo, err := t.GetUserInfo(user)
 	if err != nil {
 		return "", err
 	}
 
-	if id := reRoomIDMeta.FindSubmatch(body); len(id) > 1 {
-		return string(id[1]), nil
-	}
-
-	if id := reRoomIDJson.FindSubmatch(body); len(id) > 1 {
-		return string(id[1]), nil
-	}
-
-	if strings.Contains(string(body), `"og:url"`) {
+	if userInfo.RoomID == "" {
 		return "", ErrUserOffline
 	}
-	return "", ErrIPBlocked
+	return userInfo.RoomID, nil
 }
 
 func (l *Live) getRoomInfo() (*RoomInfo, error) {

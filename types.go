@@ -994,3 +994,43 @@ type PriceItem struct {
 	ID            int    `json:"id"`
 	Price         int    `json:"price"` // USD Cents
 }
+
+type UserInfo struct {
+	ID           string `json:"id"`
+	ShortID      string `json:"shortId"`
+	UniqueID     string `json:"uniqueId"`
+	Nickname     string `json:"nickname"`
+	AvatarLarger string `json:"avatarLarger"`
+	AvatarMedium string `json:"avatarMedium"`
+	AvatarThumb  string `json:"avatarThumb"`
+	Signature    string `json:"signature"`
+	CreateTime   int    `json:"createTime"`
+	Verified     bool   `json:"verified"`
+	SecUID       string `json:"secUid"`
+	Ftc          bool   `json:"ftc"`
+	Relation     int    `json:"relation"`
+	OpenFavorite bool   `json:"openFavorite"`
+	BioLink      struct {
+		Link string `json:"link"`
+		Risk int    `json:"risk"`
+	} `json:"bioLink"`
+	CommentSetting int    `json:"commentSetting"`
+	DuetSetting    int    `json:"duetSetting"`
+	StitchSetting  int    `json:"stitchSetting"`
+	PrivateAccount bool   `json:"privateAccount"`
+	Secret         bool   `json:"secret"`
+	IsADVirtual    bool   `json:"isADVirtual"`
+	RoomID         string `json:"roomId"`
+
+	Stats UserStats
+}
+
+type UserStats struct {
+	FollowerCount  int  `json:"followerCount"`
+	FollowingCount int  `json:"followingCount"`
+	Heart          int  `json:"heart"`
+	HeartCount     int  `json:"heartCount"`
+	VideoCount     int  `json:"videoCount"`
+	DiggCount      int  `json:"diggCount"`
+	NeedFix        bool `json:"needFix"`
+}

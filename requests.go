@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -107,6 +108,11 @@ func (t *TikTok) sendRequest(o *reqOptions) (body []byte, err error) {
 		return
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		err = fmt.Errorf("Received status code %d", resp.StatusCode)
+		return
+	}
 
 	body, err = ioutil.ReadAll(resp.Body)
 	if err != nil {

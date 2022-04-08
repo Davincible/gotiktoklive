@@ -15,7 +15,7 @@ const (
 	urlFeed      = "feed/"
 	urlRankList  = "ranklist/online_audience/"
 	urlPriceList = "diamond/"
-	urlUserLive  = "@%s/live/"
+	urlUser      = "@%s/"
 	urlRoomInfo  = "room/info/"
 	urlRoomData  = "im/fetch/"
 	urlGiftInfo  = "gift/list/"
@@ -55,6 +55,7 @@ var (
 
 	reRoomIDMeta = regexp.MustCompile("room_id=([0-9]*)")
 	reRoomIDJson = regexp.MustCompile(`"roomId":"([0-9]*)"`)
+	reJsonData   = regexp.MustCompile(`<script id="sigi-persisted-data">window\['SIGI_STATE'\]=(.*);w`)
 )
 
 var (
@@ -63,4 +64,5 @@ var (
 	ErrLiveHasEnded      = errors.New("Livestream has ended")
 	ErrMsgNotImplemented = errors.New("Message protobuf type has not been implemented, please report")
 	ErrNoMoreFeedItems   = errors.New("No more feed items available")
+	ErrUserNotFound      = errors.New("User not found")
 )

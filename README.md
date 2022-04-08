@@ -78,6 +78,10 @@ func NewTikTok() *TikTok {}
 //  count, listen to the Live.Events channel.
 func (t *TikTok) TrackUser(username string) (*Live, error) {}
 
+// GetUserInfo will fetch information about the user, such as follwers stats,
+//  their user ID, as well as the RoomID, with which you can tell if they are live.
+func (t *TikTok) GetUserInfo(user string) (*UserInfo, error) {}
+
 // GetPriceList fetches the price list of tiktok coins. Prices will be given in
 //  USD cents and the cents equivalent of the local currency of the IP location.
 // To fetch a different currency, use a VPN or proxy to change your IP to a

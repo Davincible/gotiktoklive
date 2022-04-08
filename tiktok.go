@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/cookiejar"
 	neturl "net/url"
@@ -62,6 +63,43 @@ func NewTikTok() *TikTok {
 		})
 
 	return &tiktok
+}
+
+// GetUserInfo will fetch information about the user, such as follwers stats,
+//  their user ID, as well as the RoomID, with which you can tell if they are live.
+func (t *TikTok) GetUserInfo(user string) (*UserInfo, error) {
+	body, err := t.sendRequest(&reqOptions{
+		Endpoint: fmt.Sprintf(urlUser, user),
+		OmitAPI:  true,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// Find json data in HTML page
+	matches := reJsonData.FindSubmatch(body)
+	if len(matches) == 0 {
+		return nil, ErrIPBlocked
+	}
+
+	// Parse json data
+	var res struct {
+		UserModule struct {
+			Users map[string]*UserInfo `json:"users"`
+			Stats map[string]UserStats `json:"stats"`
+		} `json:"UserModule"`
+	}
+	if err := json.Unmarshal(matches[1], &res); err != nil {
+		return nil, err
+	}
+
+	if len(res.UserModule.Users) == 0 {
+		return nil, ErrUserNotFound
+	}
+
+	userInfo := res.UserModule.Users[user]
+	userInfo.Stats = res.UserModule.Stats[user]
+	return userInfo, nil
 }
 
 // GetPriceList fetches the price list of tiktok coins. Prices will be given in
