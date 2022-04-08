@@ -206,8 +206,12 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 			}
 
 			pt := pt.(*pb.WebcastInRoomBannerMessage)
-			out = RoomBannerEvent{}
-			err = json.Unmarshal([]byte(pt.Json), &out.(*RoomBannerEvent).Data)
+
+			var data interface{}
+			err = json.Unmarshal([]byte(pt.Json), &data)
+			out = RoomBannerEvent{
+				Data: data,
+			}
 		}()
 	case "RoomMessage":
 		pt = &pb.RoomMessage{}
