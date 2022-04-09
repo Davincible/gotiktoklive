@@ -35,18 +35,10 @@ type Live struct {
 	Events   chan interface{}
 }
 
-// TrackUser will start to track the livestream of a user, if live.
-// To listen to events emitted by the livestream, such as comments and viewer
-//  count, listen to the Live.Events channel.
-func (t *TikTok) TrackUser(username string) (*Live, error) {
-	id, err := t.getRoomID(username)
-	if err != nil {
-		return nil, err
-	}
-
+func (t *TikTok) newLive(roomId string) *Live {
 	live := Live{
 		t:      t,
-		ID:     id,
+		ID:     roomId,
 		Events: make(chan interface{}, 100),
 	}
 
@@ -57,33 +49,63 @@ func (t *TikTok) TrackUser(username string) (*Live, error) {
 		close(live.Events)
 	}
 
-	roomInfo, err := live.getRoomInfo()
+	return &live
+}
+
+func (l *Live) fetchRoom() error {
+	roomInfo, err := l.getRoomInfo()
+	if err != nil {
+		return err
+	}
+	l.Info = roomInfo
+
+	giftInfo, err := l.getGiftInfo()
+	if err != nil {
+		return err
+	}
+	l.GiftInfo = giftInfo
+
+	err = l.getRoomData()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// TrackUser will start to track the livestream of a user, if live.
+// To listen to events emitted by the livestream, such as comments and viewer
+//  count, listen to the Live.Events channel.
+func (t *TikTok) TrackUser(username string) (*Live, error) {
+	id, err := t.getRoomID(username)
 	if err != nil {
 		return nil, err
 	}
-	live.Info = roomInfo
 
-	giftInfo, err := live.getGiftInfo()
-	if err != nil {
+	return t.TrackRoom(id)
+}
+
+// TrackRoom will start to track a room by room ID
+func (t *TikTok) TrackRoom(roomId string) (*Live, error) {
+	live := t.newLive(roomId)
+
+	if err := live.connectRoom(); err != nil {
 		return nil, err
 	}
-	live.GiftInfo = giftInfo
 
-	err = live.getRoomData()
-	if err != nil {
-		return nil, err
-	}
+	return live, nil
+}
 
+func (live *Live) connectRoom() error {
 	wss, err := live.tryConnectionUpgrade()
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if !wss {
-		t.wg.Add(1)
+		live.t.wg.Add(1)
 		live.startPolling()
 	}
 
-	return &live, nil
+	return nil
 }
 
 func (t *TikTok) getRoomID(user string) (string, error) {

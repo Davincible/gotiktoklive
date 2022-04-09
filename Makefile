@@ -22,5 +22,10 @@ tidy:
 
 .PHONY: test
 test:
-	@go test -v ./... -cover -count=1
+	@go test -v ./... -cover -coverprofile coverage.out -count=1
+
+.PHONY: cov
+cov:
+	@gocovsh --profile coverage.out
+
 

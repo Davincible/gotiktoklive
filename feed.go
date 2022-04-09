@@ -3,8 +3,6 @@ package gotiktoklive
 import (
 	"encoding/json"
 	"strconv"
-
-	"golang.org/x/net/context"
 )
 
 // Feed allows you to fetch reccomended livestreams.
@@ -69,39 +67,5 @@ func (f *Feed) Next() (*FeedItem, error) {
 //  a Live instance, just as if you would start tracking the user with
 //  tiktok.TrackUser(<user>).
 func (s *LiveStream) Track() (*Live, error) {
-	live := Live{
-		t:      s.t,
-		ID:     s.Rid,
-		Info:   s.Room,
-		Events: make(chan interface{}, 100),
-	}
-
-	ctx, cancel := context.WithCancel(context.Background())
-	live.done = ctx.Done
-	live.close = func() {
-		cancel()
-		close(live.Events)
-	}
-
-	giftInfo, err := live.getGiftInfo()
-	if err != nil {
-		return nil, err
-	}
-	live.GiftInfo = giftInfo
-
-	err = live.getRoomData()
-	if err != nil {
-		return nil, err
-	}
-
-	wss, err := live.tryConnectionUpgrade()
-	if err != nil {
-		return nil, err
-	}
-	if !wss {
-		s.t.wg.Add(1)
-		live.startPolling()
-	}
-
-	return &live, nil
+	return s.t.TrackRoom(s.Rid)
 }

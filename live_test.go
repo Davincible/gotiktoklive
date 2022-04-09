@@ -2,11 +2,13 @@ package gotiktoklive
 
 import (
 	"testing"
+
+	"github.com/Davincible/gotiktoklive/tests"
 )
 
 func TestRoomID(t *testing.T) {
 	tiktok := NewTikTok()
-	id, err := tiktok.getRoomID(USERNAME)
+	id, err := tiktok.getRoomID(tests.USERNAME)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -16,7 +18,7 @@ func TestRoomID(t *testing.T) {
 
 func TestRoomInfo(t *testing.T) {
 	tiktok := NewTikTok()
-	id, err := tiktok.getRoomID(USERNAME)
+	id, err := tiktok.getRoomID(tests.USERNAME)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -36,7 +38,7 @@ func TestRoomInfo(t *testing.T) {
 
 func TestGiftInfo(t *testing.T) {
 	tiktok := NewTikTok()
-	id, err := tiktok.getRoomID(USERNAME)
+	id, err := tiktok.getRoomID(tests.USERNAME)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -56,7 +58,7 @@ func TestGiftInfo(t *testing.T) {
 
 func TestRoomData(t *testing.T) {
 	tiktok := NewTikTok()
-	id, err := tiktok.getRoomID(USERNAME)
+	id, err := tiktok.getRoomID(tests.USERNAME)
 	if err != nil {
 		t.Fatal(err)
 	}

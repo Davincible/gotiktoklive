@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Davincible/gotiktoklive/tests"
 	"golang.org/x/net/context"
 )
 
@@ -13,7 +14,7 @@ func TestWebsocket(t *testing.T) {
 	tiktok.debugHandler = func(i ...interface{}) {
 		t.Log(i...)
 	}
-	id, err := tiktok.getRoomID(USERNAME)
+	id, err := tiktok.getRoomID(tests.USERNAME)
 	if err != nil {
 		t.Fatal(err)
 	}
