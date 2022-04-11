@@ -1,5 +1,5 @@
 package tests
 
 const (
-	USERNAME = "ganin_official"
+	USERNAME = "promobot.robots"
 )

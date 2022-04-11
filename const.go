@@ -53,9 +53,8 @@ var (
 		"version_code":      "180800",
 	}
 
-	reRoomIDMeta = regexp.MustCompile("room_id=([0-9]*)")
-	reRoomIDJson = regexp.MustCompile(`"roomId":"([0-9]*)"`)
-	reJsonData   = regexp.MustCompile(`<script id="sigi-persisted-data">window\['SIGI_STATE'\]=(.*);w`)
+	reJsonData = regexp.MustCompile(`<script id="sigi-persisted-data">window\['SIGI_STATE'\]=(.*);w`)
+	reVerify   = regexp.MustCompile(`tiktok-verify-page`)
 )
 
 var (

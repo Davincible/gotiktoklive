@@ -263,6 +263,9 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 		// Example: Cj8KIFdlYmNhc3RVbmF1dGhvcml6ZWRNZW1iZXJNZXNzYWdlEIGWipDYoOSmYhiBlon8wPXdpmIgi//59/8vMAEQARojChF3ZWJfbm9ubG9naW5faW1fMRoOCgkjZmZmZmZmZmYgkAMiBjc0MDQzNCo4ChVsaXZlX3Jvb21fZW50ZXJfdG9hc3QSD3swOnVzZXJ9IGpvaW5lZBoOCgkjZmZmZmZmZmYgkAM=
 		// TODO: do something here
 		return nil, nil
+	case "WebcastRankUpdateMessage":
+		// Example: CjUKGFdlYmNhc3RSYW5rVXBkYXRlTWVzc2FnZRCBloyOuZSKqmIYgZaGnIDeiapiIPre/MWBMBJECAEaLwoNcG1fbXRfTGl2ZV9XUhIOV2Vla2x5IHJhbmtpbmcaDgoJI2ZmZmZmZmZmIJADIgsiCSM4MEZGMzY3RjDA4yM=
+		return nil, nil
 	default:
 		data := base64.StdEncoding.EncodeToString(msg.Binary)
 		warnHandler(fmt.Errorf("%w: %s,\n%s", ErrMsgNotImplemented, msg.Type, data))

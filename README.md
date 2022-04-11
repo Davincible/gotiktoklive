@@ -44,7 +44,7 @@ for event := range live.Events {
 
     // You can specify what to do for specific events. All events are listed below.
     case gotiktoklive.UserEvent:
-        fmt.Printf("%T : %s %s\n", e, e.Event, e.User.FullName)
+        fmt.Printf("%T : %s %s\n", e, e.Event, e.User.Username)
 
     // List viewer count
     case gotiktoklive.ViewersEvent:

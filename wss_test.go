@@ -56,7 +56,12 @@ func TestWebsocket(t *testing.T) {
 		case <-timeout:
 			return
 		case event := <-live.Events:
-			t.Logf("%T: %+v", event, event)
+			switch e := event.(type) {
+			case UserEvent:
+				t.Logf("%T: %s (%s) %s", e, e.User.FullName, e.User.Nickname, e.Event)
+			default:
+				t.Logf("%T: %+v", e, e)
+			}
 		}
 	}
 }
