@@ -97,7 +97,7 @@ type BattleGroup struct {
 type User struct {
 	ID              int64
 	Username        string
-	FullName        string
+	Nickname        string
 	ProfilePicture  *ProfilePicture
 	ExtraAttributes *ExtraAttributes
 	Badge           *BadgeAttributes

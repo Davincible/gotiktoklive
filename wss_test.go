@@ -58,7 +58,7 @@ func TestWebsocket(t *testing.T) {
 		case event := <-live.Events:
 			switch e := event.(type) {
 			case UserEvent:
-				t.Logf("%T: %s (%s) %s", e, e.User.FullName, e.User.Nickname, e.Event)
+				t.Logf("%T: %s (%s) %s", e, e.User.Nickname, e.User.Nickname, e.Event)
 			default:
 				t.Logf("%T: %+v", e, e)
 			}

@@ -142,8 +142,8 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 
 				users = append(users, &User{
 					ID:       int64(user.UserId),
+					Username: user.UniqueId,
 					Nickname: user.Nickname,
-					FullName: user.UniqueId,
 					ProfilePicture: &ProfilePicture{
 						Urls: user.ProfilePicture.Urls,
 					},
@@ -293,8 +293,8 @@ func toUser(u *pb.User) *User {
 
 	user := User{
 		ID:       int64(u.UserId),
+		Username: u.UniqueId,
 		Nickname: u.Nickname,
-		FullName: u.UniqueId,
 	}
 
 	if u.ProfilePicture != nil && u.ProfilePicture.Urls != nil {
