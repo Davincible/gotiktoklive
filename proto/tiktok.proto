@@ -56,7 +56,7 @@ message WebcastGiftMessage {
 
 message WebcastGiftMessageGiftExtra {
     uint64 timestamp = 6;
-    uint64 to_user_id = 8;
+    uint64 toUserId = 8;
 }
 
 message WebcastGiftMessageGiftDetails {
@@ -208,7 +208,7 @@ message WebcastWishlistUpdateMessage {
 }
 
 message GiftUpdates {
-    uint64 some_int = 1;
+    uint64 someInt = 1;
     repeated WishListGift gifts = 2;
     // causes errors as sometimes the username is a list of ids
     // repeated GiftUser users = 3;
@@ -218,7 +218,7 @@ message GiftUpdates {
 
 message GiftUser {
    uint64 id = 1;
-   repeated string profile_picture = 3;
+   repeated string profilePicture = 3;
    string username = 4;
    uint64 unknown = 5;  // something that relates to the gifts I expect
 }
@@ -226,8 +226,8 @@ message GiftUser {
 message WishListGift {
     uint64 type = 1;
     uint64 id = 2;
-    uint64 received_count = 3;
-    uint64 goal_count = 4;
+    uint64 receivedCount = 3;
+    uint64 goalCount = 4;
     Gift gift = 5;
 }
 
