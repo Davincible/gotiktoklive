@@ -118,7 +118,11 @@ func (l *Live) readSocket() {
 	for {
 		hdr, err := rd.NextFrame()
 		if err != nil {
-			l.t.errHandler(fmt.Errorf("Failed to read websocket message"))
+			l.t.errHandler(fmt.Errorf("Failed to read websocket message, atempting to reconnect: %w", err))
+			l.wss.Close()
+			if !l.reconnectWebsocket() {
+				return
+			}
 		}
 
 		// If msg is ping or close
@@ -131,13 +135,8 @@ func (l *Live) readSocket() {
 
 		// Reopen connection if it was closed
 		if hdr.OpCode == ws.OpClose {
-			connected, err := l.tryConnectionUpgrade()
-			if err != nil {
-				l.t.errHandler(fmt.Errorf("Failed to re-open websocket connection: %w"))
-			}
-			if !connected {
-				l.t.wg.Add(1)
-				go l.startPolling()
+			l.t.warnHandler("Websocket connection was closed by server, attempting to reconnect...")
+			if !l.reconnectWebsocket() {
 				return
 			}
 		}
@@ -163,12 +162,29 @@ func (l *Live) readSocket() {
 		// Gracefully shutdown
 		select {
 		case <-l.done():
+			l.t.infoHandler("Close websocket, stream ended")
 			return
 		case <-l.t.done():
+			l.t.infoHandler("Close websocket, global context done")
 			return
 		default:
 		}
 	}
+}
+
+func (l *Live) reconnectWebsocket() bool {
+	time.Sleep(3 * time.Second)
+	connected, err := l.tryConnectionUpgrade()
+	if err != nil {
+		l.t.warnHandler(fmt.Errorf("Failed to re-open websocket connection: %w", err))
+	} else {
+		l.t.infoHandler("Reconnected to websocket successfully")
+	}
+	if !connected {
+		l.t.wg.Add(1)
+		go l.startPolling()
+	}
+	return connected
 }
 
 func (l *Live) parseWssMsg(wssMsg []byte) error {
@@ -275,6 +291,7 @@ func (l *Live) tryConnectionUpgrade() (bool, error) {
 		go l.readSocket()
 		go l.sendPing()
 
+		l.t.infoHandler("Connected to websocket")
 		return true, nil
 	}
 	return false, nil

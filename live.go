@@ -210,11 +210,11 @@ func (l *Live) startPolling() {
 	defer ticker.Stop()
 	defer l.t.wg.Done()
 
-	if l.t.Debug {
-		l.t.debugHandler("Started polling")
-	}
-
+	first := true
 	for {
+		if !first {
+			l.t.infoHandler("Started polling")
+		}
 		select {
 		case <-ticker.C:
 			err := l.getRoomData()
@@ -227,11 +227,16 @@ func (l *Live) startPolling() {
 				l.t.errHandler(err)
 			}
 			if wss {
+				if !first {
+					l.t.infoHandler("Stop polling, websocket taking over...")
+				}
 				return
 			}
 		case <-l.t.done():
+			l.t.infoHandler("Stopped polling")
 			return
 		}
+		first = false
 	}
 }
 
