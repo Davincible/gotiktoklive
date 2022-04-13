@@ -30,22 +30,16 @@ type ViewersEvent struct {
 }
 
 type GiftEvent struct {
-	Gift Gift
-	User *User
-}
-
-type Gift struct {
-	ID          int64  `json:"gift_id"`
-	RepeatCount int64  `json:"repeat_count"`
-	RepeatEnd   int64  `json:"repeat_end"`
-	MsgID       int64  `json:"msg_id"`
-	AnchorID    int64  `json:"anchor_id"`
-	RoomID      int64  `json:"room_id"`
-	Type        int64  `json:"gift_type"`
-	FromUserID  int64  `json:"from_user_id"`
-	FromIdc     string `json:"from_idc"`
-	ToUserID    int64  `json:"to_user_id"`
-	Timestamp   int64  `json:"send_gift_send_message_success_ms"`
+	ID          int
+	Name        string
+	Describe    string
+	Cost        int
+	RepeatCount int
+	RepeatEnd   bool
+	Type        int
+	ToUserID    int64
+	Timestamp   int64
+	User        *User
 }
 
 type LikeEvent struct {

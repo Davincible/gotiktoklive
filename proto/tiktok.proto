@@ -45,9 +45,31 @@ message WebcastMemberMessage {
 
 message WebcastGiftMessage {
     User user = 7;
-    string giftJson = 22;
+
+    int32 giftId = 2;
+    int32 repeatCount = 5;
+    int32 repeatEnd = 9;
+
+    WebcastGiftMessageGiftDetails giftDetails = 15;
+    WebcastGiftMessageGiftExtra giftExtra = 23;
 }
 
+message WebcastGiftMessageGiftExtra {
+    uint64 timestamp = 6;
+    uint64 to_user_id = 8;
+}
+
+message WebcastGiftMessageGiftDetails {
+    WebcastGiftMessageGiftImage giftImage = 1;
+    string giftName = 16;
+    string describe = 2;
+    int32 giftType = 11;
+    int32 diamondCount = 12;
+}
+
+message WebcastGiftMessageGiftImage {
+    string giftPictureUrl = 1;
+}
 
 // Battle start
 message WebcastLinkMicBattle {
@@ -220,6 +242,7 @@ message GiftImg {
    string color = 5;
 }
 
-message WebcastGiftBroadcastMessage {
-
+message WebcastBottomMessage {
+    MessageType type = 1;
+    string text = 2;
 }

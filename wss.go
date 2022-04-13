@@ -124,7 +124,7 @@ func (l *Live) readSocket() {
 		// If msg is ping or close
 		if hdr.OpCode.IsControl() {
 			if err := controlHandler(hdr, &rd); err != nil {
-				l.t.errHandler(err)
+				l.t.errHandler(fmt.Errorf("websocket control handler failed: %w", err))
 			}
 			continue
 		}
@@ -133,7 +133,7 @@ func (l *Live) readSocket() {
 		if hdr.OpCode == ws.OpClose {
 			connected, err := l.tryConnectionUpgrade()
 			if err != nil {
-				l.t.errHandler(err)
+				l.t.errHandler(fmt.Errorf("Failed to re-open websocket connection: %w"))
 			}
 			if !connected {
 				l.t.wg.Add(1)
@@ -153,11 +153,11 @@ func (l *Live) readSocket() {
 		// Read message
 		msgBytes, err := ioutil.ReadAll(&rd)
 		if err != nil {
-			l.t.errHandler(err)
+			l.t.errHandler(fmt.Errorf("Failed to read websocket message: %w", err))
 		}
 
 		if err := l.parseWssMsg(msgBytes); err != nil {
-			l.t.errHandler(err)
+			l.t.errHandler(fmt.Errorf("Failed to parse websocket message: %w", err))
 		}
 
 		// Gracefully shutdown
@@ -184,7 +184,7 @@ func (l *Live) parseWssMsg(wssMsg []byte) error {
 		}
 
 		if err := l.sendAck(rsp.Id); err != nil {
-			return err
+			return fmt.Errorf("Failed to send websocket ack msg: %w", err)
 		}
 		l.cursor = response.Cursor
 
@@ -195,7 +195,7 @@ func (l *Live) parseWssMsg(wssMsg []byte) error {
 		for _, rawMsg := range response.Messages {
 			msg, err := parseMsg(rawMsg, l.t.warnHandler)
 			if err != nil {
-				return err
+				return fmt.Errorf("Failed to parse response message: %w", err)
 			}
 			if msg != nil {
 				l.Events <- msg
@@ -238,7 +238,7 @@ func (l *Live) sendPing() {
 			return
 		case <-t.C:
 			if err := wsutil.WriteClientBinary(l.wss, b); err != nil {
-				l.t.errHandler(err)
+				l.t.errHandler(fmt.Errorf("Failed to send ping: %w", err))
 			}
 		}
 	}
@@ -265,7 +265,7 @@ func (l *Live) tryConnectionUpgrade() (bool, error) {
 	if l.wsURL != "" && l.wsParams != nil {
 		err := l.connect(l.wsURL, l.wsParams)
 		if err != nil {
-			return false, err
+			return false, fmt.Errorf("Connection upgrade failed: %w")
 		}
 		if l.t.Debug {
 			l.t.debugHandler("Connected to websocket")

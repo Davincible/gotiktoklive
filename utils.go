@@ -76,12 +76,17 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 
 			pt := pt.(*pb.WebcastGiftMessage)
 
-			var gift Gift
-			err = json.Unmarshal([]byte(pt.GiftJson), &gift)
-
 			out = GiftEvent{
-				Gift: gift,
-				User: toUser(pt.User),
+				ID:          int(pt.GiftId),
+				Name:        pt.GiftDetails.GiftName,
+				Describe:    pt.GiftDetails.Describe,
+				Cost:        int(pt.GiftDetails.DiamondCount),
+				RepeatCount: int(pt.RepeatCount),
+				RepeatEnd:   pt.RepeatEnd == 1,
+				Type:        int(pt.GiftDetails.GiftType),
+				ToUserID:    int64(pt.GiftExtra.ToUserId),
+				Timestamp:   int64(pt.GiftExtra.Timestamp),
+				User:        toUser(pt.User),
 			}
 		}()
 	case "WebcastLikeMessage":
@@ -209,6 +214,10 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 
 			var data interface{}
 			err = json.Unmarshal([]byte(pt.Json), &data)
+			if err != nil {
+				err = fmt.Errorf("WebcastInRoomBannerMessage: %w\n%s", err, pt.Json)
+			}
+
 			out = RoomBannerEvent{
 				Data: data,
 			}
@@ -221,6 +230,19 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 			}
 
 			pt := pt.(*pb.RoomMessage)
+			out = RoomEvent{
+				Type:    pt.Type.Type,
+				Message: pt.Text,
+			}
+		}()
+	case "WebcastBottomMessage":
+		pt = &pb.WebcastBottomMessage{}
+		defer func() {
+			if err != nil {
+				return
+			}
+
+			pt := pt.(*pb.WebcastBottomMessage)
 			out = RoomEvent{
 				Type:    pt.Type.Type,
 				Message: pt.Text,
@@ -265,6 +287,9 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 		return nil, nil
 	case "WebcastRankUpdateMessage":
 		// Example: CjUKGFdlYmNhc3RSYW5rVXBkYXRlTWVzc2FnZRCBloyOuZSKqmIYgZaGnIDeiapiIPre/MWBMBJECAEaLwoNcG1fbXRfTGl2ZV9XUhIOV2Vla2x5IHJhbmtpbmcaDgoJI2ZmZmZmZmZmIJADIgsiCSM4MEZGMzY3RjDA4yM=
+		return nil, nil
+	case "WebcastLinkMicMethod":
+		// Example: CjMKFFdlYmNhc3RMaW5rTWljTWV0aG9kEK6WofTLnoCrYhiBlqyCgfz7qmIgiLPQ/4EwMAEQCCiBiIDurevuuF8wuSs4uSs=
 		return nil, nil
 	default:
 		data := base64.StdEncoding.EncodeToString(msg.Binary)
