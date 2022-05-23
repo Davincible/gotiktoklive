@@ -77,7 +77,13 @@ func (t *TikTok) GetUserInfo(user string) (*UserInfo, error) {
 	}
 
 	// Find json data in HTML page
-	matches := reJsonData.FindSubmatch(body)
+	var matches [][]byte
+	for _, re := range reJsonData {
+		matches = re.FindSubmatch(body)
+		if len(matches) != 0 {
+			break
+		}
+	}
 	if len(matches) == 0 {
 		return nil, ErrIPBlocked
 	}

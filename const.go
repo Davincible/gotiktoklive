@@ -52,9 +52,11 @@ var (
 		"tz_name":           "Europe/Berlin",
 		"version_code":      "180800",
 	}
-
-	reJsonData = regexp.MustCompile(`<script id="sigi-persisted-data">window\['SIGI_STATE'\]=(.*);w`)
-	reVerify   = regexp.MustCompile(`tiktok-verify-page`)
+	reJsonData = []*regexp.Regexp{
+		regexp.MustCompile(`<script id="SIGI_STATE"[^>]+>(.*?)</script>`),
+		regexp.MustCompile(`<script id="sigi-persisted-data">window\['SIGI_STATE'\]=(.*);w`),
+	}
+	reVerify = regexp.MustCompile(`tiktok-verify-page`)
 )
 
 var (
