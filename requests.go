@@ -37,6 +37,11 @@ type reqOptions struct {
 }
 
 func (t *TikTok) sendRequest(o *reqOptions) (body []byte, err error) {
+	defer func() {
+		if err != nil {
+			err = fmt.Errorf("Failed to send request to %s: %w", o.Endpoint, err)
+		}
+	}()
 	method := "GET"
 	if o.IsPost {
 		method = "POST"

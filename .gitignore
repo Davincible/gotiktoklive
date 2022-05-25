@@ -17,4 +17,6 @@
 .vim/
 data/
 
+*.mkv
+
 coverage.out

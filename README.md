@@ -1,6 +1,6 @@
 # GoTikTokLive
 
-A Go module to discover, receive and decode livestreams and the livestream events such as comments and gifts in realtime from [TikTok LIVE](https://www.tiktok.com/live) by connecting to TikTok's internal WebCast push service. The package includes a wrapper that connects to the WebCast service using just the username (`uniqueId`). This allows you to connect to your own live chat as well as the live chat of other streamers. No credentials are required. Besides [Chat Comments](#ChatEvent), other events such as [Members Joining](#UserEvent), [Gifts](#GiftEvent), [Viewers](#ViewersEvent), [Follows](#UserEvent), [Shares](#UserEvent), [Questions](#QuestionEvent), [Likes](#LikeEvent) and [Battles](#BattlesEvent) can be tracked.
+A Go module to download livestreams and discover, receive and decode livestreams and the livestream events such as comments and gifts in realtime from [TikTok LIVE](https://www.tiktok.com/live) by connecting to TikTok's internal WebCast push service. The package includes a wrapper that connects to the WebCast service using just the username (`uniqueId`). This allows you to connect to your own live chat as well as the live chat of other streamers. No credentials are required. Besides [Chat Comments](#ChatEvent), other events such as [Members Joining](#UserEvent), [Gifts](#GiftEvent), [Viewers](#ViewersEvent), [Follows](#UserEvent), [Shares](#UserEvent), [Questions](#QuestionEvent), [Likes](#LikeEvent) and [Battles](#BattlesEvent) can be tracked.
 
 Looking for a Python implementation of this library? Check out [TikTok-Live-Connector](https://github.com/isaackogan/TikTok-Live-Connector) by [**@isaackogan**](https://github.com/isaackogan)
 
@@ -35,6 +35,12 @@ tiktok := gotiktoklive.NewTikTok()
 // Track a TikTok user by username
 live, err := tiktok.TrackUser("promobot.robots")
 if err != nil {
+    panic(err)
+}
+
+// Start downloading stream
+// Make sure you have the ffmpeg binary installed, and present in your path.
+if err := live.DownloadStream(); err != nil {
     panic(err)
 }
 
@@ -141,8 +147,9 @@ Chat events are broadcasted when a user posts a chat message, aka comment to a l
 
 ```go
 type ChatEvent struct {
-	Comment string
-	User    *User
+	Comment   string
+	User      *User
+	Timestamp int64
 }
 ```
 
@@ -155,6 +162,15 @@ follows the host.
 type UserEvent struct {
 	Event userEventType
 	User  *User
+}
+
+type User struct {
+	ID              int64
+	Username        string
+	Nickname        string
+	ProfilePicture  *ProfilePicture
+	ExtraAttributes *ExtraAttributes
+	Badge           *BadgeAttributes
 }
 
 // User Event Types
@@ -181,6 +197,13 @@ Gift events are broadcast when a user buys a gift for the host.
 To get more information about the gift, such as the price in coins,
 find the gift by ID in the `live.GiftInfo.Gifts`.
 
+Gift events with `GiftEvent.Type == 1` are streakable, meaning multiple gifts can 
+be sent in sequence, such as roses. For these sequences, multiple events are broadcast.
+Upon every subsequent gift in the streak, the `GiftEvent.RepeatCount` will increase by one.
+To prevent the duplicate processing of streakable gifts, you should only process 
+`if event.Type == 1 && event.RepeatEnd`, as this will be the final message of the streak, 
+and includes the total number of gifts sent in the streak.
+
 ```go
 type GiftEvent struct {
 	ID          int
@@ -193,6 +216,15 @@ type GiftEvent struct {
 	ToUserID    int64
 	Timestamp   int64
 	User        *User
+}
+
+type User struct {
+	ID              int64
+	Username        string
+	Nickname        string
+	ProfilePicture  *ProfilePicture
+	ExtraAttributes *ExtraAttributes
+	Badge           *BadgeAttributes
 }
 ```
 

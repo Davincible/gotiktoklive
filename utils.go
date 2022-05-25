@@ -22,8 +22,9 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 
 			pt := pt.(*pb.WebcastChatMessage)
 			out = ChatEvent{
-				Comment: pt.Comment,
-				User:    toUser(pt.User),
+				Comment:   pt.Comment,
+				User:      toUser(pt.User),
+				Timestamp: int64(pt.Type.Timestamp),
 			}
 		}()
 	case "WebcastMemberMessage":
@@ -76,8 +77,12 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 
 			pt := pt.(*pb.WebcastGiftMessage)
 
+			if pt.GiftId == 0 && pt.User == nil {
+				return
+			}
+
 			out = GiftEvent{
-				ID:          int(pt.GiftId),
+				ID:          int64(pt.GiftId),
 				Name:        pt.GiftDetails.GiftName,
 				Describe:    pt.GiftDetails.Describe,
 				Cost:        int(pt.GiftDetails.DiamondCount),
@@ -114,8 +119,9 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 
 			pt := pt.(*pb.WebcastQuestionNewMessage)
 			out = QuestionEvent{
-				Quesion: pt.QuestionDetails.QuestionText,
-				User:    toUser(pt.QuestionDetails.User),
+				Quesion:   pt.QuestionDetails.QuestionText,
+				User:      toUser(pt.QuestionDetails.User),
+				Timestamp: int64(pt.Type.Timestamp),
 			}
 		}()
 	case "WebcastWebsocketMessage":
@@ -295,6 +301,15 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 		// Used to broadcast the rank of a user, i.e. a top donator
 		// Example: Cv8GChZXZWJjYXN0UmFua1RleHRNZXNzYWdlEK6Wjsyclq+rYhialonA1vCoq2IgjILSloIwQskGChdwbV9tdF90b3B2aWV3ZXJfY29tbWVudBItezA6dXNlcn0ganVzdCBiZWNhbWUgYSB0b3AgezE6c3RyaW5nfSB2aWV3ZXIhGg4KCSNmZmZmZmZmZiCQAyLnBQgLqgHhBQreBQiFiMra5PGp2l4aFkpVTElFIOKdpO+4j/CfjJ7inaTvuI9KzQQKqgFodHRwczovL3AxOS1zaWduLnRpa3Rva2Nkbi11cy5jb20vdG9zLXVzZWFzdDUtYXZ0LTAwNjgtdHgvMzQzNmNkZTE2OWVhOTE5Nzg2NTUwYzNkOWNlOWU0OTB+YzVfMTAweDEwMC53ZWJwP3gtZXhwaXJlcz0xNjQ5OTM3NjAwJngtc2lnbmF0dXJlPVE4SUJzbUkzM21YRDZjeUg3dGc2Mlh1TlppcyUzRAquAWh0dHBzOi8vcDE2LXNpZ24udGlrdG9rY2RuLXVzLmNvbS90b3MtdXNlYXN0NS1hdnQtMDA2OC10eC8zNDM2Y2RlMTY5ZWE5MTk3ODY1NTBjM2Q5Y2U5ZTQ5MH5jNV8xMDB4MTAwLndlYnA/eC1leHBpcmVzPTE2NDk5Mzc2MDAmeC1zaWduYXR1cmU9JTJGNGRTcWowJTJGeDZCWDhIcWoxRXQ3RWh3d0x0USUzRAqqAWh0dHBzOi8vcDE5LXNpZ24udGlrdG9rY2RuLXVzLmNvbS90b3MtdXNlYXN0NS1hdnQtMDA2OC10eC8zNDM2Y2RlMTY5ZWE5MTk3ODY1NTBjM2Q5Y2U5ZTQ5MH5jNV8xMDB4MTAwLmpwZWc/eC1leHBpcmVzPTE2NDk5Mzc2MDAmeC1zaWduYXR1cmU9NjZZdVU4d3pqbkplN252ODJCM3BseXpHZ3RnJTNEEkAxMDB4MTAwL3Rvcy11c2Vhc3Q1LWF2dC0wMDY4LXR4LzM0MzZjZGUxNjllYTkxOTc4NjU1MGMzZDljZTllNDkwsgEGCJgREOoSggIAsgIOanVsaWViZXlvdTExMTHyAkxNUzR3TGpBQkFBQUFVR0FFQVRpemlCd2swQ3d0c1dzcy1TX1pVM1dBTUNtbVNkYm9GazdRbmFiZU5FYU5Cb3R4aEIzQl9GeVo4N0RoIgUIAVoBMxABGAQgAw==
 		return nil, nil
+	case "WebcastImDeleteMessage":
+		// Examaple: CjUKFldlYmNhc3RJbURlbGV0ZU1lc3NhZ2UQgZacprD7hLBiGIGWrLzuqoSwYiCtoba6hDAwARoJgYjj/uuvsPFf
+		return nil, nil
+	case "WebcastLinkmicBattleTaskMessage":
+		// Example: Cj4KH1dlYmNhc3RMaW5rbWljQmF0dGxlVGFza01lc3NhZ2UQgpaMzoSAhbBiGIGWrLzuqoSwYiDrmdW6hDAoARrnAQrkAQi+ARIrCAUSJwoacG1fbXRfbWF0Y2hfc3BlZWRjaGFsbGVuZ2USCQoDZHVyEgIzMBIjCAUSHwoRcG1fbXRfbWF0Y2hfZ3VpZGUSCgoFbXVsdGkSATIaMgi0ARAeYiUKF3BtX210X21hdGNoX2d1aWRlX3RvYXN0EgoKBW11bHRpEgEyqAEBuAEHIlkIkAEQHhgCWioKHHBtX210X21hdGNoX2J1ZmZzdGFydGluZ3Nvb24SCgoFbXVsdGkSATJiJAoWcG1fbXRfbWF0Y2hfZ2lmdHBvaW50cxIKCgVtdWx0aRIBMg==
+		return nil, nil
+	case "WebcastHashtagMessage":
+		// Example: ClwKFVdlYmNhc3RIYXNodGFnTWVzc2FnZRCGlpDU3ouIsGIYhZaJvInAiLBiMAFCLQoRcG1fbXRfbGl2ZV90b3BpYzgSCE91dGRvb3JzGg4KCSNmZmZmZmZmZiCQAxLSAQgIGs0BClNodHRwczovL3AxNi13ZWJjYXN0LnRpa3Rva2Nkbi5jb20vaW1nL2FsaXNnL3dlYmNhc3Qtc2cvOE91dGRvb3JzLnBuZ350cGx2LW9iai5pbWFnZQpTaHR0cHM6Ly9wMTktd2ViY2FzdC50aWt0b2tjZG4uY29tL2ltZy9hbGlzZy93ZWJjYXN0LXNnLzhPdXRkb29ycy5wbmd+dHBsdi1vYmouaW1hZ2USGHdlYmNhc3Qtc2cvOE91dGRvb3JzLnBuZyoHI0NFRTVFQg==
+		return nil, nil
 	default:
 		data := base64.StdEncoding.EncodeToString(msg.Binary)
 		warnHandler(fmt.Errorf("%w: %s,\n%s", ErrMsgNotImplemented, msg.Type, data))
@@ -311,8 +326,8 @@ func defaultLogHandler(i ...interface{}) {
 	fmt.Println(i...)
 }
 
-func routineErrHandler(err error) {
-	panic(err)
+func routineErrHandler(err ...interface{}) {
+	panic(err[0])
 }
 
 func toUser(u *pb.User) *User {

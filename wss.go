@@ -162,7 +162,6 @@ func (l *Live) readSocket() {
 		// Gracefully shutdown
 		select {
 		case <-l.done():
-			l.t.infoHandler("Close websocket, stream ended")
 			return
 		case <-l.t.done():
 			l.t.infoHandler("Close websocket, global context done")
@@ -214,6 +213,10 @@ func (l *Live) parseWssMsg(wssMsg []byte) error {
 				return fmt.Errorf("Failed to parse response message: %w", err)
 			}
 			if msg != nil {
+				// If channel is full, discard the first message
+				if len(l.Events) == l.chanSize {
+					<-l.Events
+				}
 				l.Events <- msg
 			}
 
@@ -281,7 +284,7 @@ func (l *Live) tryConnectionUpgrade() (bool, error) {
 	if l.wsURL != "" && l.wsParams != nil {
 		err := l.connect(l.wsURL, l.wsParams)
 		if err != nil {
-			return false, fmt.Errorf("Connection upgrade failed: %w")
+			return false, fmt.Errorf("Connection upgrade failed: %w", err)
 		}
 		if l.t.Debug {
 			l.t.debugHandler("Connected to websocket")

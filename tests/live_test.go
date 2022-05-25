@@ -7,7 +7,7 @@ import (
 	"github.com/Davincible/gotiktoklive"
 )
 
-func TestTrackUser(t *testing.T) {
+func TestLiveTrackUser(t *testing.T) {
 	tiktok := gotiktoklive.NewTikTok()
 	live, err := tiktok.TrackUser(USERNAME)
 	if err != nil {
@@ -31,7 +31,7 @@ func TestTrackUser(t *testing.T) {
 	}
 }
 
-func TestPriceList(t *testing.T) {
+func TestLivePriceList(t *testing.T) {
 	tiktok := gotiktoklive.NewTikTok()
 
 	priceList, err := tiktok.GetPriceList()
@@ -40,6 +40,25 @@ func TestPriceList(t *testing.T) {
 	}
 
 	t.Logf("Fetched %d prices", len(priceList.PriceList))
+}
+
+func TestLiveDownload(t *testing.T) {
+	tiktok := gotiktoklive.NewTikTok()
+	live, err := tiktok.TrackUser(USERNAME)
+	if err != nil {
+		t.Fatal(err)
+	}
+	live.DownloadStream()
+	time.Sleep(10 * time.Second)
+	live.Close()
+
+	live, err = tiktok.TrackUser(USERNAME)
+	if err != nil {
+		t.Fatal(err)
+	}
+	live.DownloadStream("my-test-download.mkv")
+	time.Sleep(10 * time.Second)
+	live.Close()
 }
 
 // func TestRankList(t *testing.T) {

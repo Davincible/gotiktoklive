@@ -29,8 +29,7 @@ type TikTok struct {
 	infoHandler  func(...interface{})
 	warnHandler  func(...interface{})
 	debugHandler func(...interface{})
-
-	errHandler func(error)
+	errHandler   func(...interface{})
 
 	proxy *neturl.URL
 }
@@ -62,6 +61,10 @@ func NewTikTok() *TikTok {
 			os.Exit(0)
 		})
 
+	tiktok.sendRequest(&reqOptions{
+		OmitAPI: true,
+	})
+
 	return &tiktok
 }
 
@@ -75,6 +78,10 @@ func (t *TikTok) GetUserInfo(user string) (*UserInfo, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// if len(matches) != 0 {
+	// 	return nil, ErrCaptcha
+	// }
 
 	// Find json data in HTML page
 	var matches [][]byte
@@ -141,7 +148,7 @@ func (t *TikTok) SetDebugHandler(f func(...interface{})) {
 	t.debugHandler = f
 }
 
-func (t *TikTok) SetErrorHandler(f func(error)) {
+func (t *TikTok) SetErrorHandler(f func(...interface{})) {
 	t.errHandler = f
 }
 
@@ -156,12 +163,21 @@ func (t *TikTok) SetProxy(url string, insecure bool) error {
 	}
 
 	t.proxy = uri
-	t.c.Transport = &http.Transport{
-		Proxy: http.ProxyURL(uri),
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: insecure,
-		},
+
+	tr := http.DefaultTransport.(*http.Transport).Clone()
+	tr.TLSClientConfig = &tls.Config{
+		InsecureSkipVerify: insecure,
 	}
+	tr.Proxy = http.ProxyURL(uri)
+
+	t.c.Transport = tr
+
+	// t.c.Transport = &http.Transport{
+	// 	Proxy: http.ProxyURL(uri),
+	// 	TLSClientConfig: &tls.Config{
+	// 		InsecureSkipVerify: insecure,
+	// 	},
+	// }
 	return nil
 }
 

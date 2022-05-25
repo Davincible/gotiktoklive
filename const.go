@@ -16,9 +16,10 @@ const (
 	urlRankList  = "ranklist/online_audience/"
 	urlPriceList = "diamond/"
 	urlUser      = "@%s/"
-	urlRoomInfo  = "room/info/"
-	urlRoomData  = "im/fetch/"
-	urlGiftInfo  = "gift/list/"
+	// Think this changed to room/enter/
+	urlRoomInfo = "room/info/"
+	urlRoomData = "im/fetch/"
+	urlGiftInfo = "gift/list/"
 
 	// Default Request Headers
 	userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
@@ -66,4 +67,7 @@ var (
 	ErrMsgNotImplemented = errors.New("Message protobuf type has not been implemented, please report")
 	ErrNoMoreFeedItems   = errors.New("No more feed items available")
 	ErrUserNotFound      = errors.New("User not found")
+	ErrCaptcha           = errors.New("Captcha detected, unable to proceed")
+	ErrUrlNotFound       = errors.New("Unable to download stream, URL not found.")
+	ErrFFMPEGNotFound = errors.New("Please install ffmpeg before downloading.")
 )

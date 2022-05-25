@@ -34,6 +34,7 @@ message WebcastRoomUserSeqMessage {
 }
 
 message WebcastChatMessage {
+    MessageType type = 1;
     User user = 2;
     string comment = 3;
 }
@@ -118,6 +119,7 @@ message WebcastLikeMessage {
 
 // New question event
 message WebcastQuestionNewMessage {
+    MessageType type = 1;
     QuestionDetails questionDetails = 2;
 }
 
@@ -195,6 +197,7 @@ message WebcastInRoomBannerMessage {
 
 message MessageType {
     string type = 1;
+    uint64 timestamp = 4;
 }
 
 message RoomMessage {
