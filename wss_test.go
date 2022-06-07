@@ -27,7 +27,7 @@ func TestWebsocket(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	live.done = ctx.Done
-	live.Close = func() {
+	live.close = func() {
 		cancel()
 		close(live.Events)
 	}

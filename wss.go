@@ -118,7 +118,7 @@ func (l *Live) readSocket() {
 	for {
 		hdr, err := rd.NextFrame()
 		if err != nil {
-			l.t.errHandler(fmt.Errorf("Failed to read websocket message, atempting to reconnect: %w", err))
+			l.t.warnHandler(fmt.Errorf("Failed to read websocket message, attempting to reconnect: %w", err))
 			l.wss.Close()
 			if !l.reconnectWebsocket() {
 				return

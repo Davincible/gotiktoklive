@@ -2,7 +2,6 @@ package gotiktoklive
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -13,6 +12,7 @@ import (
 	"time"
 
 	pb "github.com/Davincible/gotiktoklive/proto"
+	"github.com/pkg/errors"
 	"golang.org/x/net/context"
 
 	"google.golang.org/protobuf/proto"
@@ -54,10 +54,13 @@ func (t *TikTok) newLive(roomId string) *Live {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	live.done = ctx.Done
+	o := sync.Once{}
 	live.close = func() {
-		cancel()
-		t.wg.Wait()
-		close(live.Events)
+		o.Do(func() {
+			cancel()
+			t.wg.Wait()
+			close(live.Events)
+		})
 	}
 
 	return &live
@@ -88,9 +91,30 @@ func (l *Live) fetchRoom() error {
 	return nil
 }
 
+// GetRoomInfo will only fetch the room info, normally available with live.Info
+//  but not start tracking a live stream.
+func (t *TikTok) GetRoomInfo(username string) (*RoomInfo, error) {
+	id, err := t.getRoomID(username)
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to fetch room ID by username")
+	}
+
+	l := Live{
+		t:  t,
+		ID: id,
+	}
+
+	roomInfo, err := l.getRoomInfo()
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to fetch room info")
+	}
+	return roomInfo, nil
+}
+
 // TrackUser will start to track the livestream of a user, if live.
 // To listen to events emitted by the livestream, such as comments and viewer
 //  count, listen to the Live.Events channel.
+// It will start a go routine and connect to the tiktok websocket.
 func (t *TikTok) TrackUser(username string) (*Live, error) {
 	id, err := t.getRoomID(username)
 	if err != nil {
@@ -100,7 +124,8 @@ func (t *TikTok) TrackUser(username string) (*Live, error) {
 	return t.TrackRoom(id)
 }
 
-// TrackRoom will start to track a room by room ID
+// TrackRoom will start to track a room by room ID.
+// It will start a go routine and connect to the tiktok websocket.
 func (t *TikTok) TrackRoom(roomId string) (*Live, error) {
 	live := t.newLive(roomId)
 

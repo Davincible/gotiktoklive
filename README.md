@@ -82,11 +82,20 @@ func NewTikTok() *TikTok {}
 // TrackUser will start to track the livestream of a user, if live.
 // To listen to events emitted by the livestream, such as comments and viewer
 //  count, listen to the Live.Events channel.
+// It will start a go routine and connect to the tiktok websocket.
 func (t *TikTok) TrackUser(username string) (*Live, error) {}
+
+// TrackRoom will start to track a room by room ID.
+// It will start a go routine and connect to the tiktok websocket.
+func (t *TikTok) TrackRoom(roomId string) (*Live, error) {}
 
 // GetUserInfo will fetch information about the user, such as follwers stats,
 //  their user ID, as well as the RoomID, with which you can tell if they are live.
 func (t *TikTok) GetUserInfo(user string) (*UserInfo, error) {}
+
+// GetRoomInfo will only fetch the room info, normally available with Live.Info
+//  but not start tracking a live stream.
+func (t *TikTok) GetRoomInfo(username string) (*RoomInfo, error) {}
 
 // GetPriceList fetches the price list of tiktok coins. Prices will be given in
 //  USD cents and the cents equivalent of the local currency of the IP location.

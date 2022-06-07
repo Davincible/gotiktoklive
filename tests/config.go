@@ -1,6 +1,6 @@
 package tests
 
 const (
-	USERNAME = "promobot.robots"
+	USERNAME = "sp.cosplay"
 	
 )
