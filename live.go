@@ -404,7 +404,6 @@ func (t *TikTok) signURL(reqUrl string) (*SignedURL, error) {
 			"client":            clientId,
 			"uuc":               strconv.Itoa(t.streams),
 			"url":               reqUrl,
-			"extendedRateLimit": "yes",
 		},
 	})
 	if err != nil {
