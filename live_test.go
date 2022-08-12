@@ -76,3 +76,15 @@ func TestRoomData(t *testing.T) {
 
 	t.Logf("Ws url: %s, %+v", live.wsURL, live.wsParams)
 }
+
+// func TestHeadless(t *testing.T) {
+// 	tiktok := NewTikTok()
+// 	tiktok.SetProxy("http://127.0.0.1:8080", false)
+// 	// err := tiktok.openTikTok("https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html")
+// 	err := tiktok.openTikTok("https://www.tiktok.com/")
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
+//
+// 	t.Log("Test done!")
+// }

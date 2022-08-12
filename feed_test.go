@@ -1,6 +1,11 @@
 package gotiktoklive
 
-import "testing"
+import (
+	"sort"
+	"testing"
+
+	"github.com/Davincible/gotiktoklive/tests"
+)
 
 func TestFeedItem(t *testing.T) {
 	tiktok := NewTikTok()
@@ -24,6 +29,12 @@ func TestFeedItem(t *testing.T) {
 			break
 		}
 	}
-
 	t.Logf("Found %d items, over %d requests", len(items), i)
+
+	sort.Slice(items, func(i, j int) bool {
+		return items[i].Room.UserCount > items[j].Room.UserCount
+	})
+
+	tests.USERNAME = items[0].Room.Owner.Username
+	t.Logf("Setting username to %s", items[0].Room.Owner.Username)
 }

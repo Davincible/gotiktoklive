@@ -67,17 +67,17 @@ func TestLiveDownload(t *testing.T) {
 // 	if err != nil {
 // 		t.Fatal(err)
 // 	}
-//
+// 
 // 	tiktok.LogRequests = true
 // 	rankList, err := live.GetRankList()
 // 	if err != nil {
 // 		t.Fatal(err)
 // 	}
-//
+// 
 // 	if len(rankList.Ranks) == 0 {
 // 		t.Fatal("No ranked users found")
 // 	}
-//
+// 
 // 	topUser := rankList.Ranks[0]
 // 	t.Logf("Top user (%s) has donated %d coins", topUser.User.Nickname, topUser.Score)
 // }

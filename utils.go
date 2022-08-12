@@ -310,6 +310,9 @@ func parseMsg(msg *pb.Message, warnHandler func(...interface{})) (out interface{
 	case "WebcastHashtagMessage":
 		// Example: ClwKFVdlYmNhc3RIYXNodGFnTWVzc2FnZRCGlpDU3ouIsGIYhZaJvInAiLBiMAFCLQoRcG1fbXRfbGl2ZV90b3BpYzgSCE91dGRvb3JzGg4KCSNmZmZmZmZmZiCQAxLSAQgIGs0BClNodHRwczovL3AxNi13ZWJjYXN0LnRpa3Rva2Nkbi5jb20vaW1nL2FsaXNnL3dlYmNhc3Qtc2cvOE91dGRvb3JzLnBuZ350cGx2LW9iai5pbWFnZQpTaHR0cHM6Ly9wMTktd2ViY2FzdC50aWt0b2tjZG4uY29tL2ltZy9hbGlzZy93ZWJjYXN0LXNnLzhPdXRkb29ycy5wbmd+dHBsdi1vYmouaW1hZ2USGHdlYmNhc3Qtc2cvOE91dGRvb3JzLnBuZyoHI0NFRTVFQg==
 		return nil, nil
+	case "WebcastLinkLayerMessage":
+		// Example: CjQKF1dlYmNhc3RMaW5rTGF5ZXJNZXNzYWdlEIWWr7zk67H7YhiGlu2k0NOn+2Ig9ebsn6kwEAsYhpaAg8fTp/tiIASyBokBEoYBEkMKFAiGlu2k0NOn+2IQgYiouLPLpOtfEic3MTMxMDYxNDU0NzI1MTg4MzU4XzcxMzEwNjE0NTQ3MjUyMDQ3NDIaAhIAGj8KFAiGlu2k0NOn+2IQhojB2JvOvIViEic3MTMxMDYxNDU0NzI1MTg4MzU4XzcxMzEwOTIyODU0ODg3Nzc5ODk=
+		return nil, nil
 	default:
 		data := base64.StdEncoding.EncodeToString(msg.Binary)
 		warnHandler(fmt.Errorf("%w: %s,\n%s", ErrMsgNotImplemented, msg.Type, data))

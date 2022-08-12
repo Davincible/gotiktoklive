@@ -155,7 +155,7 @@ type RoomInfo struct {
 		URLList    []string `json:"url_list"`
 		Width      float64  `json:"width"`
 	} `json:"cover"`
-	CreateTime           int64       `json:"create_time"`
+	CreateTime           int64         `json:"create_time"`
 	DecoList             []interface{} `json:"deco_list"`
 	DisablePreloadStream bool          `json:"disable_preload_stream"`
 	FansclubMsgStyle     float64       `json:"fansclub_msg_style"`
@@ -911,4 +911,15 @@ type UserStats struct {
 	VideoCount     int  `json:"videoCount"`
 	DiggCount      int  `json:"diggCount"`
 	NeedFix        bool `json:"needFix"`
+}
+
+type SignedURL struct {
+	SignedURL      string `json:"signedUrl"`
+	MsToken        string `json:"msToken"`
+	Signature      string `json:"_signature"`
+	XBogus         string `json:"X-Bogus"`
+	UserAgent      string `json:"User-Agent"`
+	BrowserVersion string `json:"browserVersion"`
+	BrowserName    string `json:"browserName"`
+	Error          string `json:"error"`
 }

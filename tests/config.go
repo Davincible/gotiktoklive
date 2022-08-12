@@ -1,6 +1,5 @@
 package tests
 
-const (
-	USERNAME = "sp.cosplay"
-	
+var (
+	USERNAME = "r_sciroc"
 )

@@ -20,6 +20,9 @@ type TikTok struct {
 	wg   *sync.WaitGroup
 	done func() <-chan struct{}
 
+	streams int
+	mu      *sync.Mutex
+
 	// Pass extra debug messages to debugHandler
 	Debug bool
 
@@ -45,10 +48,18 @@ func NewTikTok() *TikTok {
 		c:            &http.Client{Jar: jar},
 		wg:           &wg,
 		done:         ctx.Done,
+		mu:           &sync.Mutex{},
 		infoHandler:  defaultLogHandler,
 		warnHandler:  defaultLogHandler,
 		debugHandler: defaultLogHandler,
 		errHandler:   routineErrHandler,
+	}
+
+	envs := []string{"HTTP_PROXY", "HTTPS_PROXY"}
+	for _, env := range envs {
+		if e := os.Getenv(env); e != "" {
+			tiktok.SetProxy(e, false)
+		}
 	}
 
 	setupInterruptHandler(

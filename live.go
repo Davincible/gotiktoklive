@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -51,6 +52,9 @@ func (t *TikTok) newLive(roomId string) *Live {
 		Events:   make(chan interface{}, DEFAULT_EVENTS_CHAN_SIZE),
 		chanSize: DEFAULT_EVENTS_CHAN_SIZE,
 	}
+	t.mu.Lock()
+	t.streams += 1
+	t.mu.Unlock()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	live.done = ctx.Done
@@ -60,6 +64,9 @@ func (t *TikTok) newLive(roomId string) *Live {
 			cancel()
 			t.wg.Wait()
 			close(live.Events)
+			t.mu.Lock()
+			t.streams -= 1
+			t.mu.Unlock()
 		})
 	}
 
@@ -120,6 +127,11 @@ func (t *TikTok) TrackUser(username string) (*Live, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	t.sendRequest(&reqOptions{
+		Endpoint: fmt.Sprintf(urlUser, username) + "live",
+		OmitAPI:  true,
+	})
 
 	return t.TrackRoom(id)
 }
@@ -318,7 +330,11 @@ func (l *Live) DownloadStream(file ...string) error {
 	}
 
 	// Run ffmpeg command
-	cmd := exec.Command("ffmpeg", "-i", url, "-c", "copy", path)
+	c := []string{"-i", url, "-c", "copy", path}
+	if l.t.proxy != nil && (l.t.proxy.Scheme == "http" || l.t.proxy.Scheme == "https") {
+		c = append([]string{"-http_proxy", l.t.proxy.String()}, c...)
+	}
+	cmd := exec.Command("ffmpeg", c...)
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
@@ -364,10 +380,9 @@ func (l *Live) DownloadStream(file ...string) error {
 		if err := cmd.Wait(); err != nil {
 			nerr := new(exec.ExitError)
 			if errors.As(err, &nerr) {
-				l.t.errHandler(fmt.Errorf("Download command failed with: %w\nCommand: %v\nStderr: %v\nStdout: %v\n", err, cmd.Args, string(stderrb), string(stdoutb)))
-
+				l.t.errHandler(fmt.Errorf("download command failed with: %w\nCommand: %v\nStderr: %v\nStdout: %v\n", err, cmd.Args, string(stderrb), string(stdoutb)))
 			}
-			l.t.errHandler(fmt.Errorf("Download command failed with: %w\nCommand: %v\n", err, cmd.Args))
+			l.t.errHandler(fmt.Errorf("download command failed with: %w\nCommand: %v\n", err, cmd.Args))
 		}
 
 		mu.Lock()
@@ -379,6 +394,28 @@ func (l *Live) DownloadStream(file ...string) error {
 	l.t.infoHandler(fmt.Sprintf("Started downloading stream by %s to %s\n", l.Info.Owner.Username, path))
 
 	return nil
+}
+
+func (t *TikTok) signURL(reqUrl string) (*SignedURL, error) {
+	body, err := t.sendRequest(&reqOptions{
+		URI:      tiktokSigner,
+		Endpoint: urlSignReq,
+		Query: map[string]string{
+			"client":            clientId,
+			"uuc":               strconv.Itoa(t.streams),
+			"url":               reqUrl,
+			"extendedRateLimit": "yes",
+		},
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to sign request")
+	}
+
+	var data SignedURL
+	if err := json.Unmarshal(body, &data); err != nil {
+		return nil, errors.Wrap(err, "Failed to unmarshal signer server json response")
+	}
+	return &data, nil
 }
 
 // Only able to get this while logged in

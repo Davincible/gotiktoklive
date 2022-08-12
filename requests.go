@@ -5,7 +5,7 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 )
@@ -33,7 +33,11 @@ type reqOptions struct {
 	// Extra headers to add
 	ExtraHeaders map[string]string
 
+	// Use base tiktok URi instead of webcast api
 	OmitAPI bool
+
+	// Specifiy base URI
+	URI string
 }
 
 func (t *TikTok) sendRequest(o *reqOptions) (body []byte, err error) {
@@ -51,8 +55,11 @@ func (t *TikTok) sendRequest(o *reqOptions) (body []byte, err error) {
 	if o.OmitAPI {
 		uri = tiktokBaseUrl
 	}
-
+	if o.URI != "" {
+		uri = o.URI
+	}
 	uri = uri + o.Endpoint
+
 	u, err := url.Parse(uri)
 	if err != nil {
 		return
@@ -60,7 +67,9 @@ func (t *TikTok) sendRequest(o *reqOptions) (body []byte, err error) {
 
 	vs := url.Values{}
 	for k, v := range o.Query {
-		vs.Add(k, v)
+		if v != "" {
+			vs.Add(k, v)
+		}
 	}
 
 	reqData := bytes.NewBuffer([]byte{})
@@ -70,8 +79,19 @@ func (t *TikTok) sendRequest(o *reqOptions) (body []byte, err error) {
 		u.RawQuery = vs.Encode()
 	}
 
+	ua := userAgent
+	fullUrl := u.String()
+	if !o.OmitAPI && o.URI == "" && o.Endpoint == urlRoomData {
+		signed, err := t.signURL(fullUrl)
+		if err != nil {
+			return nil, err
+		}
+		ua = signed.UserAgent
+		fullUrl = signed.SignedURL
+	}
+
 	var req *http.Request
-	req, err = http.NewRequest(method, u.String(), reqData)
+	req, err = http.NewRequest(method, fullUrl, reqData)
 	if err != nil {
 		return
 	}
@@ -97,7 +117,7 @@ func (t *TikTok) sendRequest(o *reqOptions) (body []byte, err error) {
 		// "Connection":      "keep-alive",
 		"Connection":      "close",
 		"Cache-Control":   "max-age=0",
-		"User-Agent":      userAgent,
+		"User-Agent":      ua,
 		"Accept":          "text/html,application/json,application/protobuf",
 		"Referer":         referer,
 		"Origin":          origin,
@@ -114,13 +134,18 @@ func (t *TikTok) sendRequest(o *reqOptions) (body []byte, err error) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode >= 400 {
-		err = fmt.Errorf("Received status code %d", resp.StatusCode)
+	var bb bytes.Buffer
+	_, err = io.Copy(&bb, resp.Body)
+	if err != nil {
 		return
 	}
+	body = bb.Bytes()
 
-	body, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
+	if resp.StatusCode == 429 {
+		err = ErrRateLimitExceeded
+		return
+	} else if resp.StatusCode >= 400 {
+		err = fmt.Errorf("received status code %d", resp.StatusCode)
 		return
 	}
 
@@ -132,7 +157,9 @@ func (t *TikTok) sendRequest(o *reqOptions) (body []byte, err error) {
 		if err != nil {
 			return nil, err
 		}
-		body, err = ioutil.ReadAll(zr)
+		var bb bytes.Buffer
+		_, err = io.Copy(&bb, zr)
+		body = bb.Bytes()
 		if err != nil {
 			return body, err
 		}
