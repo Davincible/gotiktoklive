@@ -1,3 +1,5 @@
+[![GoDoc](https://godoc.org/github.com/Davincible/gotiktoklive?status.svg)](https://godoc.org/github.com/Davincible/gotiktoklive) [![Go Report Card](https://goreportcard.com/badge/github.com/Davincible/gotiktoklive)](https://goreportcard.com/report/github.com/Davincible/gotiktoklive)
+
 # GoTikTokLive
 
 A Go module to download livestreams and discover, receive and decode livestreams and the livestream events such as comments and gifts in realtime from [TikTok LIVE](https://www.tiktok.com/live) by connecting to TikTok's internal WebCast push service. The package includes a wrapper that connects to the WebCast service using just the username (`uniqueId`). This allows you to connect to your own live chat as well as the live chat of other streamers. No credentials are required. Besides [Chat Comments](#ChatEvent), other events such as [Members Joining](#UserEvent), [Gifts](#GiftEvent), [Viewers](#ViewersEvent), [Follows](#UserEvent), [Shares](#UserEvent), [Questions](#QuestionEvent), [Likes](#LikeEvent) and [Battles](#BattlesEvent) can be tracked.
