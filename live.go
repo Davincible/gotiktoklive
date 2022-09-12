@@ -12,9 +12,10 @@ import (
 	"sync"
 	"time"
 
-	pb "github.com/Davincible/gotiktoklive/proto"
 	"github.com/pkg/errors"
 	"golang.org/x/net/context"
+
+	pb "github.com/Davincible/gotiktoklive/proto"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -310,7 +311,7 @@ func (l *Live) DownloadStream(file ...string) error {
 	// Get URl
 	url := l.Info.StreamURL.HlsPullURL
 	if url == "" {
-		return ErrUrlNotFound
+		return ErrURLNotFound
 	}
 
 	// Set file path
@@ -401,9 +402,9 @@ func (t *TikTok) signURL(reqUrl string) (*SignedURL, error) {
 		URI:      tiktokSigner,
 		Endpoint: urlSignReq,
 		Query: map[string]string{
-			"client":            clientId,
-			"uuc":               strconv.Itoa(t.streams),
-			"url":               reqUrl,
+			"client": clientId,
+			"uuc":    strconv.Itoa(t.streams),
+			"url":    reqUrl,
 		},
 	})
 	if err != nil {

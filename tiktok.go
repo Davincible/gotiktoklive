@@ -121,8 +121,22 @@ func (t *TikTok) GetUserInfo(user string) (*UserInfo, error) {
 		return nil, ErrUserNotFound
 	}
 
-	userInfo := res.UserModule.Users[user]
-	userInfo.Stats = res.UserModule.Stats[user]
+	if res.UserModule.Users == nil {
+		return nil, ErrUserInfoNotFound
+	}
+
+	userInfo, ok := res.UserModule.Users[user]
+	if !ok {
+		return nil, ErrUserInfoNotFound
+	}
+
+	if res.UserModule.Stats == nil {
+		stats, ok := res.UserModule.Stats[user]
+		if ok {
+			userInfo.Stats = stats
+		}
+	}
+
 	return userInfo, nil
 }
 
